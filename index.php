@@ -11,6 +11,8 @@ $categoryList = [
     'other'         => 'Разное'
 ];
 $itemList =[
+    //По хорошему, цену числом бы переделать, чтобы убрать неявное преобразование
+    //при форматировании, но пока оставлим так
     [
         'name' => '2014 Rossignol District Snowboard',
         'category' => 'boards',
@@ -126,7 +128,7 @@ $itemList =[
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount"><?=$item['price'] ?></span>
-                                <span class="lot__cost"><?=$item['price'] ?><b class="rub">р</b></span>
+                                <span class="lot__cost"><?=getValueInMoneyType($item['price']) ?></span>
                             </div>
                             <div class="lot__timer timer">
                                 12:23
@@ -198,3 +200,24 @@ $itemList =[
 <script src="script.js"></script>
 </body>
 </html>
+
+<?php
+function getValueInMoneyType (float $value): string {
+
+    //Получаем целую часть числа
+    $intValue = ceil($value);
+    $result = (string) $intValue;
+
+    //Добавляем группировку цифр, если надо
+    if ($intValue >= 1000) {
+        $result = number_format($intValue,0,".",' ');   
+    };
+
+    //Добавляем знак рубля
+    $result .= " ₽";
+
+    return $result;
+}
+
+?>
+
