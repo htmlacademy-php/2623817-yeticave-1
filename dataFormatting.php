@@ -16,4 +16,13 @@ function get_value_in_money_type (float $value): string {
     return $result;
 }
 
+function get_expire_time(string $strExpireDate): array{
+    $expireDate = new DateTime($strExpireDate);
+    $currentDate = new DateTime("now");
+    $expireTime = date_diff($currentDate, $expireDate,false);
+    return [
+       'hours' => ($expireTime->days * 24 + $expireTime->h) * ($expireTime->invert?0:1), // Количество часов
+       'minutes' => $expireTime->i  * ($expireTime->invert?0:1)//Количество минут
+    ];
+}
 ?>
