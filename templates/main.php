@@ -32,7 +32,7 @@
                                 <span class="lot__amount"><?=htmlspecialchars($item['price']) ?></span>
                                 <span class="lot__cost"><?=htmlspecialchars(get_value_in_money_type($item['price'])) ?></span>
                             </div>
-                            <?php $expireTime = get_expire_time($item['expireDate']);?>
+                            <?php $expireTime = get_expire_time(($item['expireDate']??''));?>
                             <div class="lot__timer timer <?php if($expireTime['hours'] < 1){ echo "timer--finishing";}?>">
                                 <?= sprintf("%02d:%02d",$expireTime['hours'],$expireTime['minutes']);?>   
                             </div>

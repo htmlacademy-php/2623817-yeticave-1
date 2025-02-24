@@ -26,8 +26,7 @@ $itemList =[
         'name' => 'DC Ply Mens 2016/2017 Snowboard',
         'category' => 'boards',
         'price' => '159999',
-        'imgPath' =>'img/lot-2.jpg',
-        'expireDate' =>'2025-04-15'
+        'imgPath' =>'img/lot-2.jpg'
     ],
     [
         'name' => 'Крепления Union Contact Pro 2015 года размер L/XL',
