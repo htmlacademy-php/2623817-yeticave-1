@@ -1,5 +1,5 @@
 <?php
-function getValueInMoneyType (float $value): string {
+function get_value_in_money_type (float $value): string {
 
     //Получаем целую часть числа
     $intValue = ceil($value);

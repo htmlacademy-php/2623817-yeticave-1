@@ -30,7 +30,7 @@
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount"><?=htmlspecialchars($item['price']) ?></span>
-                                <span class="lot__cost"><?=htmlspecialchars(getValueInMoneyType($item['price'])) ?></span>
+                                <span class="lot__cost"><?=htmlspecialchars(get_value_in_money_type($item['price'])) ?></span>
                             </div>
                             <div class="lot__timer timer">
                                 12:23
