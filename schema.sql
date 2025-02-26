@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`categories` (
 ;
 
 CREATE TABLE IF NOT EXISTS `yeticave_1`.`lots` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `create_date` TIMESTAMP NOT NULL,
   `name` VARCHAR(250) NOT NULL,
   `description` TEXT NULL,
