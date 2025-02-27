@@ -18,33 +18,33 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`categories` (
 ;
 
 CREATE TABLE IF NOT EXISTS `yeticave_1`.`lots` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `create_date` TIMESTAMP NOT NULL,
+  `id` INT NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` VARCHAR(250) NOT NULL,
   `description` TEXT NULL,
   `image_path` VARCHAR(260) NULL,
-  `start_price` DECIMAL(15,2) NOT NULL,
+  `start_price` INT UNSIGNED NOT NULL,
   `expiration_date` TIMESTAMP NOT NULL,
-  `price_step` INT NOT NULL,
-  `author` INT NULL,
-  `winner` INT NULL,
-  `category` VARCHAR(45) NULL,
+  `price_step` INT UNSIGNED NOT NULL,
+  `author_id` INT NULL,
+  `winner_id` INT NULL,
+  `category_id` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
-  INDEX `author_idx` (`author` ASC) VISIBLE,
-  INDEX `winner_idx` (`winner` ASC) VISIBLE,
-  INDEX `category_idx` (`category` ASC) VISIBLE,
+  INDEX `author_idx` (`author_id` ASC) VISIBLE,
+  INDEX `winner_idx` (`winner_id` ASC) VISIBLE,
+  INDEX `category_idx` (`category_id` ASC) VISIBLE,
   CONSTRAINT `author`
-    FOREIGN KEY (`author`)
+    FOREIGN KEY (`author_id`)
     REFERENCES `yeticave_1`.`users` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `winner`
-    FOREIGN KEY (`winner`)
+    FOREIGN KEY (`winner_id`)
     REFERENCES `yeticave_1`.`users` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `category`
-    FOREIGN KEY (`category`)
+    FOREIGN KEY (`category_id`)
     REFERENCES `yeticave_1`.`categories` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
@@ -52,22 +52,21 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`lots` (
 
 CREATE TABLE IF NOT EXISTS `yeticave_1`.`bets` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `date` TIMESTAMP NOT NULL,
-  `price` DECIMAL(15,2) NOT NULL,
-  `user` INT NOT NULL,
-  `lot` INT NOT NULL,
+  `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `price` INT UNSIGNED NOT NULL,
+  `user_id` INT NOT NULL,
+  `lot_id` INT NOT NULL,
   PRIMARY KEY (`id`),
-  INDEX `user_idx` (`user` ASC) VISIBLE,
-  INDEX `lot_idx` (`lot` ASC) VISIBLE,
+  INDEX `user_idx` (`user_id` ASC) VISIBLE,
+  INDEX `lot_idx` (`lot_id` ASC) VISIBLE,
   CONSTRAINT `user`
-    FOREIGN KEY (`user`)
+    FOREIGN KEY (`user_id`)
     REFERENCES `yeticave_1`.`users` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE,
   CONSTRAINT `lot`
-    FOREIGN KEY (`lot`)
+    FOREIGN KEY (`lot_id`)
     REFERENCES `yeticave_1`.`lots` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE)
-;
-
+    ;
