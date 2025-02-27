@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`users` (
   `name` VARCHAR(45) NOT NULL,
   `password` VARCHAR(32) NOT NULL,
   `contact_info` VARCHAR(120) NOT NULL,
-  `registration_date` VARCHAR(45) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ;
