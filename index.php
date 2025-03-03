@@ -1,6 +1,20 @@
 <?php
 require_once('testData.php');
 require_once('helpers.php');
+require_once('db/DBFunctions.php');
+
+$mysqlConnection = db_get_connection();
+if (!$mysqlConnection){
+    echo 'error'; // Сюда бы вывести страницу с ошибкой, но такую не нашел
+    return;
+}
+
+$dbCategoryList = db_get_category_list($mysqlConnection);
+$dbItemList = db_get_item_list($mysqlConnection);
+db_close_connection($mysqlConnection);
+
+$categoryList = array_column($dbCategoryList,'name','id');
+$itemList = $dbItemList;
 
 //подготовка блока main
 $mainData = [
@@ -8,6 +22,7 @@ $mainData = [
     'itemList' => $itemList   
 ];
 $mainPageHTML = include_template('main.php',$mainData);
+
 
 //подготовка блока layout
 $layoutData = $mainData;
