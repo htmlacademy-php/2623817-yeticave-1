@@ -7,7 +7,7 @@ define("DB_QUERIES" , [
         FROM yeticave_1.categories as categories;",
     
     //Получение списка открытых лотов. 
-    //Считаем, что лот открыт, если нет победителя
+    //Считаем, что лот открыт, если не настала дата окончания
     //Считаем, что цену = максимальная ставка. если ставок нет цена = первоначальная цена
     'getItemList' => "SELECT 
         lots.id as lot_id,
@@ -15,6 +15,7 @@ define("DB_QUERIES" , [
         lots.start_price as start_price,
         lots.image_path as image_path,
         categories.name as category,
+        lots.category_id as category_id,
         lots.expiration_date as expiration_date,
         IFNULL(prices.price,lots.start_price) as price -- можно сделать 'prices.price + lots.price_step', если нужна последняя ставка + шаг
     FROM yeticave_1.lots as lots
@@ -27,7 +28,8 @@ define("DB_QUERIES" , [
             GROUP BY bets.lot_id) as prices ON 
             lots.id = prices.lot_id
     WHERE
-        lots.winner_id IS NULL 
+        lots.expiration_date > NOW() 
+        AND &setIdCondition
     order by created_at DESC"
 ]);
 

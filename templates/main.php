@@ -8,7 +8,7 @@
             <!--заполните этот список из массива категорий-->
             <?php foreach($categoryList as $categoryId => $categoryName){?>
             <li class="promo__item promo__item--<?=$categoryId //Считаем, что ИД пользователь не вводит?>">
-                <a class="promo__link" href="pages/all-lots.html"><?= htmlspecialchars($categoryName)?></a>
+                <a class="promo__link" href="<?="index.php?category=".$categoryId?>"><?= htmlspecialchars($categoryName)?></a>
             </li>
             <?php };?>
         </ul>
@@ -25,8 +25,8 @@
                         <img src="<?=$item['image_path']//считаем, что названия картинок генерируются системой ?>" width="350" height="260" alt="">
                     </div>
                     <div class="lot__info">
-                        <span class="lot__category"><?= (htmlspecialchars($categoryList[$item['category']] ?? 'Прочее')) ?></span>
-                        <h3 class="lot__title"><a class="text-link" href="pages/lot.html"><?=htmlspecialchars($item['lot_name']) ?></a></h3>
+                        <span class="lot__category"><?= (htmlspecialchars($categoryList[$item['category_id']] ?? 'Прочее')) ?></span>
+                        <h3 class="lot__title"><a class="text-link" href=<?="pages/lot.html?id={$item['lot_id']}"?>><?=htmlspecialchars($item['lot_name']) ?></a></h3>
                         <div class="lot__state">
                             <div class="lot__rate">
                                 <span class="lot__amount"><?=htmlspecialchars($item['start_price']) ?></span>

@@ -53,9 +53,9 @@
     <nav class="nav">
         <ul class="nav__list container">
             <!--заполните этот список из массива категорий-->
-            <?php foreach($categoryList as $categoryName){?>
+            <?php foreach($categoryList as $categoryId => $categoryName){?>
                 <li class="nav__item">
-                <a href="pages/all-lots.html"><?= htmlspecialchars($categoryName)?></a>
+                <a href="<?="index.php?category=".$categoryId?>"><?= htmlspecialchars($categoryName)?></a>
             </li>
             <?php };?>
             
