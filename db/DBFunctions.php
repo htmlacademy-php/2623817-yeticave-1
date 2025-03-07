@@ -99,4 +99,23 @@ function db_get_item_list(mysqli $connection, array $param): array
 
 }
 
+function db_get_item(mysqli $connection, array $param): array
+{
+
+    $query = DB_QUERIES['getItem'];
+    $queryParam = [
+        'type' => '',
+        'value' => []];
+    if (isset($param['id'])) {
+        //Добавить параметр ID
+        $queryParam['type'] .= 'i';
+        $queryParam['value'][] = $param['id'];
+    }
+    else{
+        return [];
+    }
+    return db_query_execute($connection, $query, $queryParam);
+
+}
+
 ?>
