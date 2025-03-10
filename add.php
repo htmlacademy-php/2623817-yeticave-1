@@ -114,7 +114,7 @@ if ($itIsPost) {
         if ($is_empty($formData, $fieldId)) {
             $fieldError = &$errors[$fieldId];
             $fieldError['IsError'] = true;
-            $fieldError['errorDescription'] = $fieldError['errorDescription'] . 'Заполните это поле. ';
+            $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . 'Заполните это поле. ';
             $formError = true;
         }
     }
@@ -127,7 +127,7 @@ if ($itIsPost) {
             if (!$is_valid($formData[$fieldId], ['categoryList' => $categoryList])) {
                 $fieldError = &$errors[$fieldId];
                 $fieldError['IsError'] = true;
-                $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
+                $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
                 $formError = true;
             }
     }
@@ -153,7 +153,7 @@ if ($itIsPost) {
                     $fieldError = &$errors[$fieldName];
                     $fieldError['IsError'] = true;
                     $message = 'Не удалось загрузить. Выберите другой файл. ';
-                    $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
+                    $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
                     $formError = true;
                 }
             }
@@ -161,18 +161,52 @@ if ($itIsPost) {
             $fieldError = &$errors[$fieldName];
             $fieldError['IsError'] = true;
             $message = 'Неверный тип файла. Выберите другой файл. ';
-            $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
+            $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
             $formError = true;
         }
     } else {
         $fieldError = &$errors[$fieldName];
         $fieldError['IsError'] = true;
         $message = 'Выберите файл';
-        $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
+        $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
         $formError = true;
     }
 }
 
+
+// если форма была отправлена и нет оишбок - запись в БД
+if ($itIsPost && !$formError) {
+
+    $mysqlConnection = db_get_connection();
+    if (!$mysqlConnection) {
+        http_response_code(500);
+        exit();
+    }
+
+    $queryParam = db_get_add_item_params(
+        $formData['lot-name'],
+        $formData['message'],
+        $formData['lot-img'],
+        $formData['lot-rate'],
+        $formData['lot-date'],
+        $formData['lot-step'],
+        11,
+        NULL,
+        $formData['category']
+    );
+    $queryResult = db_add_item($mysqlConnection, $queryParam);
+    db_close_connection($mysqlConnection);
+
+    if ($queryResult) {
+        header('Location: index.php');
+        exit();
+    } else {
+        http_response_code(500);
+        exit();
+    }
+    
+
+}
 
 //Вывод страницы
 //подготовка блока main

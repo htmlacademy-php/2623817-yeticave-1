@@ -25,7 +25,7 @@
       <div class="form__item form__item--file <?= $errors['lot-img']['IsError'] ?? false ?'form__item--invalid':''?>">
         <label>Изображение <sup>*</sup></label>
         <div class="form__input-file">
-          <input  type="file" id="lot-img" name="lot-img" > <!--class="visually-hidden"-->
+          <input class="visually-hidden" type="file" id="lot-img" name="lot-img" > <!--class="visually-hidden"-->
           <label for="lot-img">
             Добавить
           </label>
