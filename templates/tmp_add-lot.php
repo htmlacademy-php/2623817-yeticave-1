@@ -1,4 +1,4 @@
-<form class="form form--add-lot container <?= ($formError)?'form--invalid':''?>" action="/add.php" method="post"> <!-- form--invalid -->
+<form class="form form--add-lot container <?= ($formError)?'form--invalid':''?>" action="/add.php" method="post" enctype="multipart/form-data"> <!-- form--invalid -->
       <h2>Добавление лота</h2>
       <div class="form__container-two">
         <div class="form__item <?= $errors['lot-name']['IsError'] ?? false ?'form__item--invalid':''?>"> <!-- form__item--invalid -->
@@ -22,14 +22,15 @@
         <textarea id="message" name="message" placeholder="Напишите описание лота"><?= $formData['message'] ?? "";?></textarea>
         <span class="form__error"><?= $errors['message']['IsError'] ?? false ?$errors['message']['errorDescription']:''?></span>
       </div>
-      <div class="form__item form__item--file">
+      <div class="form__item form__item--file <?= $errors['lot-img']['IsError'] ?? false ?'form__item--invalid':''?>">
         <label>Изображение <sup>*</sup></label>
         <div class="form__input-file">
-          <input class="visually-hidden" type="file" id="lot-img" value="">
+          <input  type="file" id="lot-img" name="lot-img" > <!--class="visually-hidden"-->
           <label for="lot-img">
             Добавить
           </label>
         </div>
+        <span class="form__error"><?= $errors['lot-img']['IsError'] ?? false ?$errors['lot-img']['errorDescription']:''?></span>
       </div>
       <div class="form__container-three">
         <div class="form__item form__item--small <?= $errors['lot-rate']['IsError'] ?? false ?'form__item--invalid':''?>">

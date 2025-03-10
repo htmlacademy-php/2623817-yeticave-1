@@ -44,7 +44,7 @@ $validateFunctions = [
     ],
     'category' => [
         'function' => function ($value, $params = []) {
-            return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS) && array_key_exists($value,$params['categoryList']);
+            return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS) && array_key_exists($value, $params['categoryList']);
         },
         'message' => 'Некорректная категория'
     ],
@@ -73,6 +73,7 @@ $validateFunctions = [
         'message' => 'ввдедите дату в формате 2019-01-01. Дата должна быть не раньша чем через 24 часа'
     ]
 ];
+$mimeTypesAllowed = ['image/png', 'image/jpg', 'image/jpeg'];
 $errors = [];
 foreach ($FieldNames as $FieldId => $fieldName) {
     $errors[$FieldId] = [
@@ -104,6 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] = 'POST') {
     $itIsPost = true;
 }
 
+
+
 //Проверка данных формы
 if ($itIsPost) {
     //Проверка на пустоту
@@ -121,7 +124,7 @@ if ($itIsPost) {
         $message = $validationFunction['message'];
         $is_valid = $validationFunction['function'];
         if (!$errors[$fieldId]['IsError'])
-            if (!$is_valid($formData[$fieldId],['categoryList' => $categoryList])) {
+            if (!$is_valid($formData[$fieldId], ['categoryList' => $categoryList])) {
                 $fieldError = &$errors[$fieldId];
                 $fieldError['IsError'] = true;
                 $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
@@ -129,8 +132,46 @@ if ($itIsPost) {
             }
     }
 
+    //Проверка файла
+    //lot-img
+    //Сохранение выбранного файла не делал
+    $fieldName = 'lot-img';
+    if (isset($fieldName, $_FILES) && !empty($_FILES[$fieldName]['tmp_name'])) {
+        //Проверить содержимое файла
+        $fileMimeType = mime_content_type($_FILES[$fieldName]['tmp_name']);
+        if (in_array($fileMimeType, $mimeTypesAllowed)) {
+            if (!$formError) { // если больше нет ошибок на форме, то грузим файл. 
+                $targetDirectory = "uploads/"; // Путь к папке, куда хотим переместить файл
+                $originalName = $_FILES[$fieldName]['name'];
+                $fileInfo = pathinfo($originalName);     // Получаем расширение файла
+                $temporaryName = basename($_FILES[$fieldName]['tmp_name']);
+                $newFilePath = $targetDirectory . $temporaryName . '.' . $fileInfo['extension'];  // Новое имя файла
+                $moveResult = move_uploaded_file($_FILES[$fieldName]['tmp_name'], $newFilePath);
+                if ($moveResult) {
+                    $formData[$fieldName] = $newFilePath;
+                } else {
+                    $fieldError = &$errors[$fieldName];
+                    $fieldError['IsError'] = true;
+                    $message = 'Не удалось загрузить. Выберите другой файл. ';
+                    $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
+                    $formError = true;
+                }
+            }
+        } else {
+            $fieldError = &$errors[$fieldName];
+            $fieldError['IsError'] = true;
+            $message = 'Неверный тип файла. Выберите другой файл. ';
+            $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
+            $formError = true;
+        }
+    } else {
+        $fieldError = &$errors[$fieldName];
+        $fieldError['IsError'] = true;
+        $message = 'Выберите файл';
+        $fieldError['errorDescription'] = $fieldError['errorDescription'] . $message;
+        $formError = true;
+    }
 }
-
 
 
 //Вывод страницы
