@@ -96,7 +96,7 @@ db_close_connection($mysqlConnection);
 
 //Проверка, что форма отправлена
 $itIsPost = false;
-if ($_SERVER['REQUEST_METHOD'] = 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     //Была отправлена форма
     foreach ($_POST as $key => $value) {
         $formData[$key] = htmlspecialchars($value);
@@ -112,9 +112,7 @@ if ($itIsPost) {
     //Проверка на пустоту
     foreach ($requiredFieldNames as $fieldId => $is_empty) {
         if ($is_empty($formData, $fieldId)) {
-            $fieldError = &$errors[$fieldId];
-            $fieldError['IsError'] = true;
-            $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . 'Заполните это поле. ';
+            set_error($errors,$fieldId,true,'Заполните это поле. ');
             $formError = true;
         }
     }
@@ -125,9 +123,7 @@ if ($itIsPost) {
         $is_valid = $validationFunction['function'];
         if (!$errors[$fieldId]['IsError'])
             if (!$is_valid($formData[$fieldId], ['categoryList' => $categoryList])) {
-                $fieldError = &$errors[$fieldId];
-                $fieldError['IsError'] = true;
-                $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
+                set_error($errors,$fieldId,true,$message);
                 $formError = true;
             }
     }
@@ -150,25 +146,19 @@ if ($itIsPost) {
                 if ($moveResult) {
                     $formData[$fieldName] = $newFilePath;
                 } else {
-                    $fieldError = &$errors[$fieldName];
-                    $fieldError['IsError'] = true;
                     $message = 'Не удалось загрузить. Выберите другой файл. ';
-                    $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
+                    set_error($errors,$fieldName,true,$message);
                     $formError = true;
                 }
             }
         } else {
-            $fieldError = &$errors[$fieldName];
-            $fieldError['IsError'] = true;
             $message = 'Неверный тип файла. Выберите другой файл. ';
-            $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
+            set_error($errors,$fieldName,true,$message);
             $formError = true;
         }
     } else {
-        $fieldError = &$errors[$fieldName];
-        $fieldError['IsError'] = true;
         $message = 'Выберите файл';
-        $fieldError['errorDescription'] = $fieldError['errorDescription'] ?? '' . $message;
+        set_error($errors,$fieldName,true,$message);
         $formError = true;
     }
 }
@@ -204,7 +194,7 @@ if ($itIsPost && !$formError) {
         http_response_code(500);
         exit();
     }
-    
+
 
 }
 
@@ -230,4 +220,11 @@ $layoutData = [
 $layoutPageHTML = include_template('layout.php', $layoutData);
 
 print ($layoutPageHTML);
+
+function set_error(&$errors, string $fieldName, bool $isError, string $errorMessage)
+{
+    $fieldError = &$errors[$fieldName];
+    $fieldError['IsError'] = $isError;
+    $fieldError['errorDescription'] = ($fieldError['errorDescription'] ?? '') . $errorMessage;
+}
 ?>
