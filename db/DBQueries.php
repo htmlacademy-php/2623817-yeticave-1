@@ -57,7 +57,20 @@ define("DB_QUERIES", [
             GROUP BY bets.lot_id) as prices ON 
             lots.id = prices.lot_id
     WHERE
-        lots.id = ?"
+        lots.id = ?",
+
+    'addItem' => 'INSERT INTO yeticave_1.lots(
+    created_at, 
+    name, 
+    description, 
+    image_path, 
+    start_price, 
+    expiration_date, 
+    price_step, 
+    author_id, 
+    winner_id, 
+    category_id) 
+    VALUES (now(),?,?,?,?,?,?,?,?,?)'
 ]);
 
 ?>

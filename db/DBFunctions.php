@@ -23,7 +23,7 @@ function db_close_connection(mysqli $connection)
         mysqli_close($connection);
 }
 
-function db_query_execute(mysqli $connection, $query, array $queryParam)
+function db_query_execute_array(mysqli $connection, $query, array $queryParam)
 {
 
     if (!$connection) {
@@ -56,6 +56,7 @@ function db_query_execute(mysqli $connection, $query, array $queryParam)
         echo "Ошибка выполнения запроса к БД: " . mysqli_stmt_error($stmt);
         return [];
     }
+    
     //Вернуть результат 
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
@@ -69,6 +70,44 @@ function db_query_execute(mysqli $connection, $query, array $queryParam)
 
 }
 
+function db_query_execute_bool(mysqli $connection, $query, array $queryParam)
+{
+
+    if (!$connection) {
+        return false;
+    }
+    ;
+
+    //Подготовить запрос 
+    $stmt = mysqli_prepare($connection, $query);
+    if (!$stmt) {
+        echo "Ошибка выполнения запроса к БД: " . mysqli_error($connection);
+        return false;
+    }
+    //подставить параметры
+    //по не актуально
+    if(isset($queryParam['type']) && is_array($queryParam['value'])){
+        $paramTypes = $queryParam['type'];
+        if(is_string($paramTypes) && strlen($paramTypes) > 0){
+            $bindResult = mysqli_stmt_bind_param($stmt, $queryParam['type'], ...$queryParam['value']);
+            if (!$bindResult) {
+                echo "Ошибка выполнения запроса к БД: " . mysqli_stmt_error($stmt);
+                return false;
+            }
+        }     
+    }
+ 
+    //Выполнить запрос
+    $executeResult = mysqli_stmt_execute($stmt);
+    if (!$executeResult) {
+        echo "Ошибка выполнения запроса к БД: " . mysqli_stmt_error($stmt);
+        return false;
+    }
+    
+    return true;
+
+}
+
 
 //Прикладные функции получения данных
 function db_get_category_list(mysqli $connection): array
@@ -76,7 +115,7 @@ function db_get_category_list(mysqli $connection): array
 
     $query = DB_QUERIES['getCategoryList'];
 
-    return db_query_execute($connection, $query, []);
+    return db_query_execute_array($connection, $query, []);
 
 }
 
@@ -95,7 +134,7 @@ function db_get_item_list(mysqli $connection, array $param): array
     } else {
         $query  = str_replace('&setIdCondition','TRUE',$query);   
     }
-    return db_query_execute($connection, $query, $queryParam);
+    return db_query_execute_array($connection, $query, $queryParam);
 
 }
 
@@ -114,7 +153,27 @@ function db_get_item(mysqli $connection, array $param): array
     else{
         return [];
     }
-    return db_query_execute($connection, $query, $queryParam);
+    return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
+function db_add_item(mysqli $connection, array $param): bool
+{
+
+    $query = DB_QUERIES['addItem'];
+    $queryParam = [
+        'type' => 'sssisiiis',
+        'value' => $param
+    ];
+    
+    return db_query_execute_bool($connection, $query, $queryParam);
+
+}
+
+function db_get_add_item_params($name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id): array
+{
+ 
+    return [$name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id];
 
 }
 
