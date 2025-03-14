@@ -125,14 +125,14 @@ if ($itIsPost && !$formError) {
     $queryParam = db_get_add_user_params(
         $formData['email'],
         $formData['name'],
-        hash('md5',$formData['password']),
+        password_hash($formData['password'],PASSWORD_DEFAULT),
         $formData['message']
     );
     $queryResult = db_add_user($mysqlConnection, $queryParam);
     db_close_connection($mysqlConnection);
 
     if ($queryResult) {
-        header('Location: index.php');
+        header('Location: index.php'); // Пока страницы входа нет, переходим на главную
         exit();
     } else {
         http_response_code(500);
