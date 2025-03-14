@@ -38,19 +38,19 @@ $requiredFieldNames = [
 $validateFunctions = [
     'lot-name' => [
         'function' => function ($value, $params = []) {
-            return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+            return $value == filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректная строка'
     ],
     'category' => [
         'function' => function ($value, $params = []) {
-            return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS) && array_key_exists($value, $params['categoryList']);
+            return ($value == filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS)) && array_key_exists($value, $params['categoryList']);
         },
         'message' => 'Некорректная категория'
     ],
     'message' => [
         'function' => function ($value, $params = []) {
-            return filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+            return $value == filter_var($value, FILTER_UNSAFE_RAW);
         },
         'message' => 'Некорректная строка'
     ],
