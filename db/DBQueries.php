@@ -70,7 +70,21 @@ define("DB_QUERIES", [
     author_id, 
     winner_id, 
     category_id) 
-    VALUES (now(),?,?,?,?,?,?,?,?,?)'
+    VALUES (now(),?,?,?,?,?,?,?,?,?)',
+
+    'getUserByEmail' => 'SELECT 
+        users.id 
+    FROM users 
+    WHERE 
+        users.email = ? LIMIT 1',
+
+    'addUser' => 'INSERT INTO yeticave_1.users(
+    email, 
+    name, 
+    password, 
+    contact_info, 
+    created_at) 
+    VALUES (?,?,?,?,now())'
 ]);
 
 ?>

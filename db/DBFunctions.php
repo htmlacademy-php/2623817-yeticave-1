@@ -157,6 +157,25 @@ function db_get_item(mysqli $connection, array $param): array
 
 }
 
+function db_get_user_by_email(mysqli $connection, array $param): array
+{
+
+    $query = DB_QUERIES['getUserByEmail'];
+    $queryParam = [
+        'type' => '',
+        'value' => []];
+    if (isset($param['email'])) {
+        //Добавить параметр ID
+        $queryParam['type'] .= 's';
+        $queryParam['value'][] = $param['email'];
+    }
+    else{
+        return [];
+    }
+    return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
 function db_add_item(mysqli $connection, array $param): bool
 {
 
@@ -170,10 +189,30 @@ function db_add_item(mysqli $connection, array $param): bool
 
 }
 
+function db_add_user(mysqli $connection, array $param): bool
+{
+
+    $query = DB_QUERIES['addUser'];
+    $queryParam = [
+        'type' => 'ssss',
+        'value' => $param
+    ];
+    
+    return db_query_execute_bool($connection, $query, $queryParam);
+
+}
+
 function db_get_add_item_params($name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id): array
 {
  
     return [$name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id];
+
+}
+
+function db_get_add_user_params($email, $name, $password, $message): array
+{
+ 
+    return [$email, $name, $password, $message];
 
 }
 
