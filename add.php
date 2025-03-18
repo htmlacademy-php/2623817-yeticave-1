@@ -2,8 +2,9 @@
 
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+require_once('layout.php');
 
-if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+if (session_status() != PHP_SESSION_ACTIVE) 
     session_start();
 if (!isset($_SESSION['id'])) {
      http_response_code(403);
@@ -186,15 +187,7 @@ $addlotPageHTML = include_template('tmp_add-lot.php', $addlotPageParam);
 
 
 //подготовка блока layout
-$sessionIsActive = isset($_SESSION['id']);
-$layoutData = [
-    'pageTitle' => 'Добавление лота',
-    'is_auth' => $sessionIsActive,
-    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
-    'mainContent' => $addlotPageHTML,
-    'categoryList' => $categoryList
-];
-$layoutPageHTML = include_template('layout.php', $layoutData);
+$layoutPageHTML = get_layout_html('Добавление лота',$addlotPageHTML);;
 
 print ($layoutPageHTML);
 

@@ -2,8 +2,9 @@
 
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+require_once('layout.php');
 
-if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+if (session_status() != PHP_SESSION_ACTIVE) 
     session_start();
 if (isset($_SESSION['id'])) {
     http_response_code(403);
@@ -146,22 +147,10 @@ if ($itIsPost && !$formError) {
 
 
 }
-//Получение данных страницы
-$mysqlConnection = db_get_connection();
-if (!$mysqlConnection) {
-    http_response_code(500);
-    exit();
-}
-//Список категорий{
-$dbCategoryList = db_get_category_list($mysqlConnection);
-$categoryList = array_column($dbCategoryList, 'name', 'id');
-
-db_close_connection($mysqlConnection);
 
 //Вывод страницы
 //подготовка блока main
 $signUpPageParam = [
-    'categoryList' => $categoryList,
     'formData' => $formData,
     'errors' => $errors,
     'formError' => $formError
@@ -170,15 +159,7 @@ $signUpPageHTML = include_template('tmp_sign-up.php', $signUpPageParam);
 
 
 //подготовка блока layout
-$sessionIsActive = isset($_SESSION['id']);
-$layoutData = [
-    'pageTitle' => 'Регистрация',
-    'is_auth' => $sessionIsActive,
-    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
-    'mainContent' => $signUpPageHTML,
-    'categoryList' => $categoryList
-];
-$layoutPageHTML = include_template('layout.php', $layoutData);
+$layoutPageHTML = get_layout_html('Регистрация',$signUpPageHTML);;
 
 print ($layoutPageHTML);
 

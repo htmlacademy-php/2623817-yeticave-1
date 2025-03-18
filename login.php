@@ -1,9 +1,9 @@
 <?php
 
 require_once('helpers.php');
-require_once('db/DBFunctions.php');
+require_once('layout.php');
 
-if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+if (session_status() != PHP_SESSION_ACTIVE) 
     session_start();
 
 $formError = false;
@@ -115,17 +115,6 @@ if ($itIsPost && !$formError && count($dbUserList) > 0) {
         $formError = true;
     }
 }
-//Получение данных страницы
-$mysqlConnection = db_get_connection();
-if (!$mysqlConnection) {
-    http_response_code(500);
-    exit();
-}
-//Список категорий{
-$dbCategoryList = db_get_category_list($mysqlConnection);
-$categoryList = array_column($dbCategoryList, 'name', 'id');
-
-db_close_connection($mysqlConnection);
 
 //Вывод страницы
 //подготовка блока main
@@ -138,15 +127,7 @@ $loginPageHTML = include_template('tmp_login.php', $loginPageParam);
 
 
 //подготовка блока layout
-$sessionIsActive = isset($_SESSION['id']);
-$layoutData = [
-    'pageTitle' => 'Регистрация',
-    'is_auth' => $sessionIsActive ,
-    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
-    'mainContent' => $loginPageHTML,
-    'categoryList' => $categoryList
-];
-$layoutPageHTML = include_template('layout.php', $layoutData);
+$layoutPageHTML = get_layout_html('Регистрация',$loginPageHTML);
 
 print ($layoutPageHTML);
 
