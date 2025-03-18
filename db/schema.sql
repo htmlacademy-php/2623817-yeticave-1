@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(32) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
   `contact_info` VARCHAR(120) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
