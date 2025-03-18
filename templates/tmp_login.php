@@ -10,5 +10,6 @@
         <input id="password" type="password" name="password" placeholder="Введите пароль" value = "<?= $formData['password'] ?? "";?>">
         <span class="form__error"><?= $errors['password']['IsError'] ?? false ?$errors['password']['errorDescription']:'Введите пароль'?></span>
       </div>
+      <span class="form__error form__error--bottom">Вы ввели неверный email/пароль.</span>
       <button type="submit" class="button">Войти</button>
     </form>
