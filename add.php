@@ -20,7 +20,7 @@ $requiredFieldNames = [
         return empty($formData[$fieldName]);
     },
     'category' => function ($formData, $fieldName) {
-        return empty($formData[$fieldName]) || $formData[$fieldName] === 'Выберите категорию';
+        return empty($formData[$fieldName]) || ((string) $formData[$fieldName] === 'Выберите категорию');
     },
     'message' => function ($formData, $fieldName) {
         return empty($formData[$fieldName]);
@@ -38,19 +38,19 @@ $requiredFieldNames = [
 $validateFunctions = [
     'lot-name' => [
         'function' => function ($value, $params = []) {
-            return $value == filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+            return (string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректная строка'
     ],
     'category' => [
         'function' => function ($value, $params = []) {
-            return ($value == filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS)) && array_key_exists($value, $params['categoryList']);
+            return ((string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS)) && array_key_exists($value, $params['categoryList']);
         },
         'message' => 'Некорректная категория'
     ],
     'message' => [
         'function' => function ($value, $params = []) {
-            return $value == filter_var($value, FILTER_UNSAFE_RAW);
+            return (string) $value === filter_var($value, FILTER_UNSAFE_RAW);
         },
         'message' => 'Некорректная строка'
     ],

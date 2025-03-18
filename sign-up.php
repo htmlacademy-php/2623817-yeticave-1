@@ -36,19 +36,19 @@ $validateFunctions = [
     ],
     'password' => [
         'function' => function ($value, $params = []) {
-            return $value == filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+            return (string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректный пароль'
     ],
     'name' => [
         'function' => function ($value, $params = []) {
-            return $value == filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+            return (string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректное имя'
     ],
     'message' => [
         'function' => function ($value, $params = []) {
-            return $value == filter_var($value, FILTER_UNSAFE_RAW);
+            return (string) $value === filter_var($value, FILTER_UNSAFE_RAW);
         },
         'message' => 'Некорректные контактные данные'
     ]
