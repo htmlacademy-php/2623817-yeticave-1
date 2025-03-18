@@ -1,9 +1,14 @@
 <?php
 
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
 
+if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
+if (isset($_SESSION['id'])) {
+    http_response_code(403);
+    exit();
+}
 $formError = false;
 $formData = [];
 $FieldNames = [
@@ -165,10 +170,11 @@ $signUpPageHTML = include_template('tmp_sign-up.php', $signUpPageParam);
 
 
 //подготовка блока layout
+$sessionIsActive = isset($_SESSION['id']);
 $layoutData = [
     'pageTitle' => 'Регистрация',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
+    'is_auth' => $sessionIsActive,
+    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
     'mainContent' => $signUpPageHTML,
     'categoryList' => $categoryList
 ];

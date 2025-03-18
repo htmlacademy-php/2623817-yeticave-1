@@ -1,8 +1,10 @@
 <?php
 
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+
+if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
 
 //Проверка параметров запроса
 $queryParam = [];
@@ -35,8 +37,10 @@ $dbItem = $dbItemArray[0];
 
 //Вывод страницы
 //подготовка блока main
+$sessionIsActive = isset($_SESSION['id']);
 $lotPageParam = [
     'item'=> $dbItem,
+    'is_auth' => $sessionIsActive
 ];
 $lotPageHTML = include_template('tmp_lot.php', $lotPageParam);
 
@@ -44,8 +48,8 @@ $lotPageHTML = include_template('tmp_lot.php', $lotPageParam);
 //подготовка блока layout
 $layoutData = [
     'pageTitle' => $dbItem['lot_name'],
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
+    'is_auth' => $sessionIsActive,
+    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
     'mainContent' => $lotPageHTML,
     'categoryList' => $categoryList
 ];

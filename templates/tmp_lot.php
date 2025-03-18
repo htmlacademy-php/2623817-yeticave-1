@@ -11,6 +11,7 @@
             <p class="lot-item__description"><?= htmlspecialchars($item['lot_description'])?></p>
         </div>
         <div class="lot-item__right">
+            <?php if($is_auth){?>
             <div class="lot-item__state">
                 <?php $expireTime = get_expire_time(($item['lot_expiration_date']??''));?>
                 <div class="lot-item__timer timer <?php if($expireTime['hours'] < 1){ echo "timer--finishing";}?>">
@@ -27,7 +28,7 @@
                 </div>
                 
             </div>
-            
+            <?php }?>
         </div>
     </div>
 </section>

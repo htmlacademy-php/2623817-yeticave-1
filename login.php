@@ -1,8 +1,10 @@
 <?php
 
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+
+if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
 
 $formError = false;
 $formData = [];
@@ -77,6 +79,7 @@ if ($itIsPost) {
 }
 
 // Проверка, что есть пользователь по этому email
+$dbUserList = [];
 if($itIsPost && !$formError){
     $mysqlConnection = db_get_connection();
     if (!$mysqlConnection) {
@@ -86,7 +89,7 @@ if($itIsPost && !$formError){
     $fieldId = 'email';
     $dbUserList = db_get_user_by_email($mysqlConnection, ['email' => $formData[$fieldId]]);
     if(count($dbUserList) === 0){
-        $message = 'Некорректная почта или пароль';
+        $message = 'Некорректная почта';
         set_error($errors, $fieldId, true, $message);
         $formError = true;   
     }
@@ -94,8 +97,23 @@ if($itIsPost && !$formError){
 }
 
 // если форма была отправлена и пользователь найден - проверка пароля и создание сессии
-if ($itIsPost && !$formError) {
-
+if ($itIsPost && !$formError && count($dbUserList) > 0) {
+    $dbUser = $dbUserList[0]; // Считаем, что почта уникальная, и в массиве всегда один элемент
+    $passwordFormFieldId = 'password';
+    $passwordDbFieldId = 'password';
+    $passwordIsCorrect = password_verify($formData[$passwordFormFieldId], $dbUser[$passwordDbFieldId]);
+    if($passwordIsCorrect){
+        $a = session_start();
+        $_SESSION['id'] = $dbUser['id'];
+        $_SESSION['name'] = $dbUser['name'];
+        $_SESSION['email'] = $dbUser['email'];
+        header('Location: index.php'); // Переход на главную страницу
+    }else{
+        $fieldId = 'email';
+        $message = 'Некорректный пароль';
+        set_error($errors, $fieldId, true, $message);
+        $formError = true;
+    }
 }
 //Получение данных страницы
 $mysqlConnection = db_get_connection();
@@ -120,10 +138,11 @@ $loginPageHTML = include_template('tmp_login.php', $loginPageParam);
 
 
 //подготовка блока layout
+$sessionIsActive = isset($_SESSION['id']);
 $layoutData = [
     'pageTitle' => 'Регистрация',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
+    'is_auth' => $sessionIsActive ,
+    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
     'mainContent' => $loginPageHTML,
     'categoryList' => $categoryList
 ];

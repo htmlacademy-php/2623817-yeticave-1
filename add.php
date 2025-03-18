@@ -1,9 +1,14 @@
 <?php
 
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
 
+if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
+if (!isset($_SESSION['id'])) {
+     http_response_code(403);
+    exit();
+}
 //Инициализация параметров
 $formError = false;
 $formData = [];
@@ -131,7 +136,7 @@ if ($itIsPost) {
     //lot-img
     //Сохранение выбранного файла не делал
     $fieldName = 'lot-img';
-    upload_file($fieldName, $errors, $formError);
+    upload_file($formData, $fieldName, $errors, $formError);
 }
 
 
@@ -181,10 +186,11 @@ $addlotPageHTML = include_template('tmp_add-lot.php', $addlotPageParam);
 
 
 //подготовка блока layout
+$sessionIsActive = isset($_SESSION['id']);
 $layoutData = [
     'pageTitle' => 'Добавление лота',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
+    'is_auth' => $sessionIsActive,
+    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
     'mainContent' => $addlotPageHTML,
     'categoryList' => $categoryList
 ];
@@ -199,7 +205,7 @@ function set_error(&$errors, string $fieldName, bool $isError, string $errorMess
     $fieldError['errorDescription'] = ($fieldError['errorDescription'] ?? '') . $errorMessage;
 }
 
-function upload_file($fieldName, &$errors, &$formError)
+function upload_file(&$formData, $fieldName, &$errors, &$formError)
 {
 
     $mimeTypesAllowed = ['image/png', 'image/jpg', 'image/jpeg'];

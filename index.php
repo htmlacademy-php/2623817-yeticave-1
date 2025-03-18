@@ -1,7 +1,9 @@
 <?php
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+
+if ($sessionIsActive = session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
 
 //Получение данных страницы
 $mysqlConnection = db_get_connection();
@@ -48,9 +50,10 @@ $mainPageHTML = include_template('main.php',$mainData);
 
 //подготовка блока layout
 $layoutData = $mainData;
+$sessionIsActive = isset($_SESSION['id']);
 $layoutData = ['pageTitle' => 'Главная страница',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
+    'is_auth' => $sessionIsActive,
+    'user_name' => $sessionIsActive ? $_SESSION['name']: '',
     'mainContent' => $mainPageHTML,
     'categoryList' => $categoryList];
 $mainPageHTML = include_template('layout.php',$layoutData);
