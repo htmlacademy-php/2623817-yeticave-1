@@ -156,7 +156,7 @@ if ($itIsPost && !$formError) {
         $formData['lot-rate'],
         $formData['lot-date'],
         $formData['lot-step'],
-        11,
+        $_SESSION['id'],
         NULL,
         $formData['category']
     );
