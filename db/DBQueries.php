@@ -73,7 +73,10 @@ define("DB_QUERIES", [
     VALUES (now(),?,?,?,?,?,?,?,?,?)',
 
     'getUserByEmail' => 'SELECT 
-        users.id 
+        users.id as id,
+        users.password as password,
+        users.name as name,
+        users.email as email
     FROM users 
     WHERE 
         users.email = ? LIMIT 1',
