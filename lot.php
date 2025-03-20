@@ -1,8 +1,11 @@
 <?php
 
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+require_once('layout.php');
+
+if (session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
 
 //Проверка параметров запроса
 $queryParam = [];
@@ -19,9 +22,6 @@ if (!$mysqlConnection) {
     http_response_code(500);
     exit();
 }
-//Список категорий{
-$dbCategoryList = db_get_category_list($mysqlConnection);
-$categoryList = array_column($dbCategoryList, 'name', 'id');
 
 // информация о лоте
 $dbItemArray = db_get_item($mysqlConnection, $queryParam);
@@ -35,21 +35,16 @@ $dbItem = $dbItemArray[0];
 
 //Вывод страницы
 //подготовка блока main
+$sessionIsActive = isset($_SESSION['id']);
 $lotPageParam = [
     'item'=> $dbItem,
+    'isAuth' => $sessionIsActive
 ];
-$lotPageHTML = include_template('tmp_lot.php', $lotPageParam);
+$lotPageHTML = include_template('lot.php', $lotPageParam);
 
 
 //подготовка блока layout
-$layoutData = [
-    'pageTitle' => $dbItem['lot_name'],
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
-    'mainContent' => $lotPageHTML,
-    'categoryList' => $categoryList
-];
-$layoutPageHTML = include_template('layout.php', $layoutData);
+$layoutPageHTML = get_layout_html($dbItem['lot_name'],$lotPageHTML);
 
 print ($layoutPageHTML);
 ?>

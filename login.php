@@ -1,22 +1,16 @@
 <?php
 
 require_once('helpers.php');
-require_once('db/DBFunctions.php');
 require_once('layout.php');
 
 if (session_status() != PHP_SESSION_ACTIVE) 
     session_start();
-if (isset($_SESSION['id'])) {
-    http_response_code(403);
-    exit();
-}
+
 $formError = false;
 $formData = [];
 $fieldNames = [
     'email' => 'E-mail',
-    'password' => 'Пароль',
-    'name' => 'Имя',
-    'message' => 'Контактные Данные'
+    'password' => 'Пароль'
 ];
 
 $requiredFieldNames = [
@@ -24,12 +18,6 @@ $requiredFieldNames = [
         return empty($formData[$fieldName]);
     },
     'password' => function ($formData, $fieldName) {
-        return empty($formData[$fieldName]);
-    },
-    'name' => function ($formData, $fieldName) {
-        return empty($formData[$fieldName]);
-    },
-    'message' => function ($formData, $fieldName) {
         return empty($formData[$fieldName]);
     }
 ];
@@ -45,18 +33,6 @@ $validateFunctions = [
             return (string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректный пароль'
-    ],
-    'name' => [
-        'function' => function ($value, $params = []) {
-            return (string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-        },
-        'message' => 'Некорректное имя'
-    ],
-    'message' => [
-        'function' => function ($value, $params = []) {
-            return (string) $value === filter_var($value, FILTER_UNSAFE_RAW);
-        },
-        'message' => 'Некорректные контактные данные'
     ]
 ];
 $errors = [];
@@ -102,7 +78,8 @@ if ($itIsPost) {
 
 }
 
-// Проверка, что нет пользователя по этому email
+// Проверка, что есть пользователь по этому email
+$dbUserList = [];
 if($itIsPost && !$formError){
     $mysqlConnection = db_get_connection();
     if (!$mysqlConnection) {
@@ -111,55 +88,46 @@ if($itIsPost && !$formError){
     }
     $fieldId = 'email';
     $dbUserList = db_get_user_by_email($mysqlConnection, ['email' => $formData[$fieldId]]);
-    if(count($dbUserList) > 0){
-        $message = 'Эта почта уже занята';
+    if(count($dbUserList) === 0){
+        $message = 'Некорректная почта';
         set_error($errors, $fieldId, true, $message);
         $formError = true;   
     }
     db_close_connection($mysqlConnection);
 }
 
-// если форма была отправлена и нет оишбок - запись в БД
-if ($itIsPost && !$formError) {
-
-    $mysqlConnection = db_get_connection();
-    if (!$mysqlConnection) {
-        http_response_code(500);
-        exit();
+// если форма была отправлена и пользователь найден - проверка пароля и создание сессии
+if ($itIsPost && !$formError && count($dbUserList) > 0) {
+    $dbUser = $dbUserList[0]; // Считаем, что почта уникальная, и в массиве всегда один элемент
+    $passwordFormFieldId = 'password';
+    $passwordDbFieldId = 'password';
+    $passwordIsCorrect = password_verify($formData[$passwordFormFieldId], $dbUser[$passwordDbFieldId]);
+    if($passwordIsCorrect){
+        $a = session_start();
+        $_SESSION['id'] = $dbUser['id'];
+        $_SESSION['name'] = $dbUser['name'];
+        $_SESSION['email'] = $dbUser['email'];
+        header('Location: index.php'); // Переход на главную страницу
+    }else{
+        $fieldId = 'email';
+        $message = 'Некорректный пароль';
+        set_error($errors, $fieldId, true, $message);
+        $formError = true;
     }
-
-    $queryParam = db_get_add_user_params(
-        $formData['email'],
-        $formData['name'],
-        password_hash($formData['password'],PASSWORD_DEFAULT),
-        $formData['message']
-    );
-    $queryResult = db_add_user($mysqlConnection, $queryParam);
-    db_close_connection($mysqlConnection);
-
-    if ($queryResult) {
-        header('Location: index.php'); // Пока страницы входа нет, переходим на главную
-        exit();
-    } else {
-        http_response_code(500);
-        exit();
-    }
-
-
 }
 
 //Вывод страницы
 //подготовка блока main
-$signUpPageParam = [
+$loginPageParam = [
     'formData' => $formData,
     'errors' => $errors,
     'formError' => $formError
 ];
-$signUpPageHTML = include_template('sign-up.php', $signUpPageParam);
+$loginPageHTML = include_template('login.php', $loginPageParam);
 
 
 //подготовка блока layout
-$layoutPageHTML = get_layout_html('Регистрация',$signUpPageHTML);;
+$layoutPageHTML = get_layout_html('Регистрация',$loginPageHTML);
 
 print ($layoutPageHTML);
 

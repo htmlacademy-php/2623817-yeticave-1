@@ -1,7 +1,10 @@
 <?php
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+require_once('layout.php');
+
+if (session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
 
 //Получение данных страницы
 $mysqlConnection = db_get_connection();
@@ -47,13 +50,7 @@ $mainPageHTML = include_template('main.php',$mainData);
 
 
 //подготовка блока layout
-$layoutData = $mainData;
-$layoutData = ['pageTitle' => 'Главная страница',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
-    'mainContent' => $mainPageHTML,
-    'categoryList' => $categoryList];
-$mainPageHTML = include_template('layout.php',$layoutData);
+$mainPageHTML = get_layout_html('Главная страница',$mainPageHTML);
 
 Print($mainPageHTML);
 ?>

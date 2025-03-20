@@ -1,13 +1,19 @@
 <?php
 
-require_once('testData.php');
 require_once('helpers.php');
 require_once('db/DBFunctions.php');
+require_once('layout.php');
 
+if (session_status() != PHP_SESSION_ACTIVE) 
+    session_start();
+if (!isset($_SESSION['id'])) {
+     http_response_code(403);
+    exit();
+}
 //Инициализация параметров
 $formError = false;
 $formData = [];
-$FieldNames = [
+$fieldNames = [
     'lot-name' => 'Наименование',
     'category' => 'Категория',
     'message' => 'Описание',
@@ -74,8 +80,8 @@ $validateFunctions = [
     ]
 ];
 $errors = [];
-foreach ($FieldNames as $FieldId => $fieldName) {
-    $errors[$FieldId] = [
+foreach ($fieldNames as $fieldId => $fieldName) {
+    $errors[$fieldId] = [
         'IsError' => false, // Флаг, что в поле есть ошибка
         'errorDescription' => ''
     ];
@@ -109,8 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 //Проверка данных формы
 if ($itIsPost) {
     //Проверка на пустоту
-    foreach ($requiredFieldNames as $fieldId => $is_empty) {
-        if ($is_empty($formData, $fieldId)) {
+    foreach ($requiredFieldNames as $fieldId => $isEmpty) {
+        if ($isEmpty($formData, $fieldId)) {
             set_error($errors, $fieldId, true, 'Заполните это поле. ');
             $formError = true;
         }
@@ -119,9 +125,9 @@ if ($itIsPost) {
     //валидация полей
     foreach ($validateFunctions as $fieldId => $validationFunction) {
         $message = $validationFunction['message'];
-        $is_valid = $validationFunction['function'];
+        $isValid = $validationFunction['function'];
         if (!$errors[$fieldId]['IsError'])
-            if (!$is_valid($formData[$fieldId], ['categoryList' => $categoryList])) {
+            if (!$isValid($formData[$fieldId], ['categoryList' => $categoryList])) {
                 set_error($errors, $fieldId, true, $message);
                 $formError = true;
             }
@@ -131,7 +137,7 @@ if ($itIsPost) {
     //lot-img
     //Сохранение выбранного файла не делал
     $fieldName = 'lot-img';
-    upload_file($fieldName, $errors, $formError);
+    upload_file($formData, $fieldName, $errors, $formError);
 }
 
 
@@ -151,7 +157,7 @@ if ($itIsPost && !$formError) {
         $formData['lot-rate'],
         $formData['lot-date'],
         $formData['lot-step'],
-        11,
+        $_SESSION['id'],
         NULL,
         $formData['category']
     );
@@ -177,18 +183,11 @@ $addlotPageParam = [
     'errors' => $errors,
     'formError' => $formError
 ];
-$addlotPageHTML = include_template('tmp_add-lot.php', $addlotPageParam);
+$addlotPageHTML = include_template('add-lot.php', $addlotPageParam);
 
 
 //подготовка блока layout
-$layoutData = [
-    'pageTitle' => 'Добавление лота',
-    'is_auth' => $is_auth,
-    'user_name' => $user_name,
-    'mainContent' => $addlotPageHTML,
-    'categoryList' => $categoryList
-];
-$layoutPageHTML = include_template('layout.php', $layoutData);
+$layoutPageHTML = get_layout_html('Добавление лота',$addlotPageHTML);;
 
 print ($layoutPageHTML);
 
@@ -199,7 +198,7 @@ function set_error(&$errors, string $fieldName, bool $isError, string $errorMess
     $fieldError['errorDescription'] = ($fieldError['errorDescription'] ?? '') . $errorMessage;
 }
 
-function upload_file($fieldName, &$errors, &$formError)
+function upload_file(&$formData, $fieldName, &$errors, &$formError)
 {
 
     $mimeTypesAllowed = ['image/png', 'image/jpg', 'image/jpeg'];
