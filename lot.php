@@ -38,9 +38,9 @@ $dbItem = $dbItemArray[0];
 $sessionIsActive = isset($_SESSION['id']);
 $lotPageParam = [
     'item'=> $dbItem,
-    'is_auth' => $sessionIsActive
+    'isAuth' => $sessionIsActive
 ];
-$lotPageHTML = include_template('tmp_lot.php', $lotPageParam);
+$lotPageHTML = include_template('lot.php', $lotPageParam);
 
 
 //подготовка блока layout

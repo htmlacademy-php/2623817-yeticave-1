@@ -22,8 +22,8 @@ function get_layout_html(string $pageTitle, string $mainContent)
     $sessionIsActive = isset($_SESSION['id']);
     $layoutData = [
         'pageTitle' => $pageTitle,
-        'is_auth' => $sessionIsActive,
-        'user_name' => $sessionIsActive ? $_SESSION['name'] : '',
+        'isAuth' => $sessionIsActive,
+        'userName' => $sessionIsActive ? $_SESSION['name'] : '',
         'mainContent' => $mainContent,
         'categoryList' => $categoryList
     ];

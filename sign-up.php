@@ -12,7 +12,7 @@ if (isset($_SESSION['id'])) {
 }
 $formError = false;
 $formData = [];
-$FieldNames = [
+$fieldNames = [
     'email' => 'E-mail',
     'password' => 'Пароль',
     'name' => 'Имя',
@@ -60,8 +60,8 @@ $validateFunctions = [
     ]
 ];
 $errors = [];
-foreach ($FieldNames as $FieldId => $fieldName) {
-    $errors[$FieldId] = [
+foreach ($fieldNames as $fieldId => $fieldName) {
+    $errors[$fieldId] = [
         'IsError' => false, // Флаг, что в поле есть ошибка
         'errorDescription' => ''
     ];
@@ -81,8 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 //Проверка данных формы
 if ($itIsPost) {
     //Проверка на пустоту
-    foreach ($requiredFieldNames as $fieldId => $is_empty) {
-        if ($is_empty($formData, $fieldId)) {
+    foreach ($requiredFieldNames as $fieldId => $isEmpty) {
+        if ($isEmpty($formData, $fieldId)) {
             set_error($errors, $fieldId, true, 'Заполните это поле. ');
             $formError = true;
         }
@@ -91,9 +91,9 @@ if ($itIsPost) {
     //валидация полей
     foreach ($validateFunctions as $fieldId => $validationFunction) {
         $message = $validationFunction['message'];
-        $is_valid = $validationFunction['function'];
+        $isValid = $validationFunction['function'];
         if (!$errors[$fieldId]['IsError'])
-            if (!$is_valid($formData[$fieldId])) {
+            if (!$isValid($formData[$fieldId])) {
                 set_error($errors, $fieldId, true, $message);
                 $formError = true;
             }
@@ -155,7 +155,7 @@ $signUpPageParam = [
     'errors' => $errors,
     'formError' => $formError
 ];
-$signUpPageHTML = include_template('tmp_sign-up.php', $signUpPageParam);
+$signUpPageHTML = include_template('sign-up.php', $signUpPageParam);
 
 
 //подготовка блока layout
