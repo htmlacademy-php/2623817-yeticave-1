@@ -21,11 +21,11 @@ $categoryList = array_column($dbCategoryList,'name','id');
 //Список товаров{
 // Если в строке пришел параметр category - отобрать товары по нужной категории
 $queryParam = [];
-$ParamCategory = filter_input(INPUT_GET,'category',FILTER_UNSAFE_RAW);
-if($ParamCategory != null){ 
+$paramCategory = filter_input(INPUT_GET,'category',FILTER_UNSAFE_RAW);
+if($paramCategory != null){ 
     //Проверить, есть ли такая категория
-    if(isset($categoryList[$ParamCategory])){
-        $queryParam['category'] = $ParamCategory;
+    if(isset($categoryList[$paramCategory])){
+        $queryParam['category'] = $paramCategory;
     }
     else{ 
         http_response_code(404);  
