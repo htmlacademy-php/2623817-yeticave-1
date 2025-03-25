@@ -50,6 +50,8 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`lots` (
     ON UPDATE CASCADE)
 ;
 
+CREATE FULLTEXT INDEX lot_ft_search ON `yeticave_1`.`lots`(name, description)
+
 CREATE TABLE IF NOT EXISTS `yeticave_1`.`bets` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
