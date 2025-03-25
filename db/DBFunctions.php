@@ -138,6 +138,76 @@ function db_get_item_list(mysqli $connection, array $param): array
 
 }
 
+function db_get_item_list_fts(mysqli $connection, array $param): array
+{
+
+    $query = DB_QUERIES['getItemListFts'];
+    $queryParam = [
+        'type' => '',
+        'value' => []];
+        
+    if (isset($param['category'])) {
+        $query  = str_replace('&setIdCondition','lots.category_id = ?',$query);
+        //Добавить параметр Категория
+        $queryParam['type'] .= 's';
+        $queryParam['value'][] = $param['category'];
+    } else {
+        $query  = str_replace('&setIdCondition','TRUE',$query);   
+    }
+    if (isset($param['search'])) {
+        $query  = str_replace('&setFtsCondition','MATCH(lots.name,lots.description) AGAINST(? IN NATURAL LANGUAGE MODE)',$query);
+        //Добавить параметр Категория
+        $queryParam['type'] .= 's';
+        $queryParam['value'][] = $param['search'];
+    } else {
+        $query  = str_replace('&setFtsCondition','TRUE',$query);   
+    }
+    return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
+function db_get_item_list_fts_limit(mysqli $connection, array $param): array
+{
+
+    $query = DB_QUERIES['getItemListFtsLimit'];
+    $queryParam = [
+        'type' => '',
+        'value' => []];
+        
+    if (isset($param['category'])) {
+        $query  = str_replace('&setIdCondition','lots.category_id = ?',$query);
+        //Добавить параметр Категория
+        $queryParam['type'] .= 's';
+        $queryParam['value'][] = $param['category'];
+    } else {
+        $query  = str_replace('&setIdCondition','TRUE',$query);   
+    }
+    if (isset($param['search'])) {
+        $query  = str_replace('&setFtsCondition','MATCH(lots.name,lots.description) AGAINST(? IN NATURAL LANGUAGE MODE)',$query);
+        //Добавить параметр Категория
+        $queryParam['type'] .= 's';
+        $queryParam['value'][] = $param['search'];
+    } else {
+        $query  = str_replace('&setFtsCondition','TRUE',$query);   
+    }
+   
+    //Limit
+    $queryParam['type'] .= 'i';
+    $queryParam['value'][] = DB_SEARCH_NUMBER_OF_ITEMS_ON_PAGE;
+    
+    //offset
+    if (isset($param['offset'])) {
+        $queryParam['type'] .= 'i';
+        $queryParam['value'][] = $param['offset'];
+    }else {
+        $queryParam['type'] .= 'i';
+        $queryParam['value'][] = 0;   
+    }
+
+    return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
 function db_get_item(mysqli $connection, array $param): array
 {
 

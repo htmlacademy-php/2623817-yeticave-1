@@ -1,7 +1,7 @@
 <?php
 require_once('db/DBFunctions.php');
 
-function get_layout_html(string $pageTitle, string $mainContent)
+function get_layout_html(string $pageTitle, string $mainContent, $search = '')
 {
     //Получение данных страницы
     $mysqlConnection = db_get_connection();
@@ -25,7 +25,8 @@ function get_layout_html(string $pageTitle, string $mainContent)
         'isAuth' => $sessionIsActive,
         'userName' => $sessionIsActive ? $_SESSION['name'] : '',
         'mainContent' => $mainContent,
-        'categoryList' => $categoryList
+        'categoryList' => $categoryList,
+        'searchParam' => $search
     ];
     return include_template('layout.php', $layoutData);
 }
