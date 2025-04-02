@@ -272,6 +272,19 @@ function db_add_user(mysqli $connection, array $param): bool
 
 }
 
+function db_add_bet(mysqli $connection, array $param): bool
+{
+
+    $query = DB_QUERIES['addBet'];
+    $queryParam = [
+        'type' => 'iii',
+        'value' => $param
+    ];
+    
+    return db_query_execute_bool($connection, $query, $queryParam);
+
+}
+
 function db_get_add_item_params($name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id): array
 {
  
@@ -283,6 +296,12 @@ function db_get_add_user_params($email, $name, $password, $message): array
 {
  
     return [$email, $name, $password, $message];
+
+}
+function db_get_add_bet_params(int $lotId, int $price, int $userId): array
+{
+ 
+    return [$price, $userId, $lotId];
 
 }
 

@@ -136,7 +136,14 @@ define("DB_QUERIES", [
         AND &setIdCondition
         AND &setFtsCondition
     order by created_at DESC
-    LIMIT ? OFFSET ?"
+    LIMIT ? OFFSET ?",
+
+    'addBet' => 'INSERT INTO yeticave_1.bets(
+        date,
+        price, 
+        user_id, 
+        lot_id) 
+    VALUES (now(),?,?,?)'
 ]);
 
 ?>
