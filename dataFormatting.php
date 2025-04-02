@@ -43,8 +43,9 @@ function get_new_url(array $newParam)
     $parsed_url = parse_url($current_url);
     parse_str($parsed_url['query'], $query_params);
 
-    foreach ($newParam as $key => $value)
+    foreach ($newParam as $key => $value){
         $query_params[$key] = $value;
+    }
 
     $new_query_string = http_build_query($query_params);
     $new_url = $parsed_url['path'] . '?' . $new_query_string;
