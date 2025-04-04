@@ -57,4 +57,19 @@ function get_new_url(array $newParam)
 
 }
 
+function get_date_diff_string(DateTime $date1, DateTime $date2): string
+{
+
+    $difference = $date1->diff($date2);
+
+    if($difference->d >= 1){
+
+    }elseif($difference->h >= 1){
+
+    }else{
+        
+    }
+    return '';
+
+}
 ?>

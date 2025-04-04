@@ -47,16 +47,16 @@ function db_query_execute_array(mysqli $connection, $query, array $queryParam)
                 echo "Ошибка выполнения запроса к БД: " . mysqli_stmt_error($stmt);
                 return [];
             }
-        }     
+        }
     }
- 
+
     //Выполнить запрос
     $executeResult = mysqli_stmt_execute($stmt);
     if (!$executeResult) {
         echo "Ошибка выполнения запроса к БД: " . mysqli_stmt_error($stmt);
         return [];
     }
-    
+
     //Вернуть результат 
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
@@ -94,16 +94,16 @@ function db_query_execute_bool(mysqli $connection, $query, array $queryParam)
                 echo "Ошибка выполнения запроса к БД: " . mysqli_stmt_error($stmt);
                 return false;
             }
-        }     
+        }
     }
- 
+
     //Выполнить запрос
     $executeResult = mysqli_stmt_execute($stmt);
     if (!$executeResult) {
         echo "Ошибка выполнения запроса к БД: " . mysqli_stmt_error($stmt);
         return false;
     }
-    
+
     return true;
 
 }
@@ -145,7 +145,7 @@ function db_get_item_list_fts(mysqli $connection, array $param): array
     $queryParam = [
         'type' => '',
         'value' => []];
-        
+
     if (isset($param['category'])) {
         $query  = str_replace('&setIdCondition','lots.category_id = ?',$query);
         //Добавить параметр Категория
@@ -173,7 +173,7 @@ function db_get_item_list_fts_limit(mysqli $connection, array $param): array
     $queryParam = [
         'type' => '',
         'value' => []];
-        
+
     if (isset($param['category'])) {
         $query  = str_replace('&setIdCondition','lots.category_id = ?',$query);
         //Добавить параметр Категория
@@ -190,18 +190,18 @@ function db_get_item_list_fts_limit(mysqli $connection, array $param): array
     } else {
         $query  = str_replace('&setFtsCondition','TRUE',$query);   
     }
-   
+
     //Limit
     $queryParam['type'] .= 'i';
     $queryParam['value'][] = DB_SEARCH_NUMBER_OF_ITEMS_ON_PAGE;
-    
+
     //offset
     if (isset($param['offset'])) {
         $queryParam['type'] .= 'i';
         $queryParam['value'][] = $param['offset'];
     }else {
         $queryParam['type'] .= 'i';
-        $queryParam['value'][] = 0;   
+        $queryParam['value'][] = 0;
     }
 
     return db_query_execute_array($connection, $query, $queryParam);
@@ -246,6 +246,31 @@ function db_get_user_by_email(mysqli $connection, array $param): array
 
 }
 
+function db_get_bets_by_user(mysqli $connection, array $param): array
+{
+
+    $query = DB_QUERIES['getBetsListByUser'];
+    $queryParam = [
+        'type' => 'i',
+        'value' => []
+    ];
+    if (isset($param['user_id'])) {
+        $queryParam['value'][] = $param['user_id'];
+    } else {
+        return [];
+    }
+    if (isset($param['category'])) {
+        $query = str_replace('&setCategoryCondition', 'lots.category_id = ?', $query);
+        //Добавить параметр Категория
+        $queryParam['type'] .= 's';
+        $queryParam['value'][] = $param['category'];
+    } else {
+        $query = str_replace('&setCategoryCondition', 'TRUE', $query);
+    }
+    return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
 function db_add_item(mysqli $connection, array $param): bool
 {
 
@@ -254,7 +279,7 @@ function db_add_item(mysqli $connection, array $param): bool
         'type' => 'sssisiiis',
         'value' => $param
     ];
-    
+
     return db_query_execute_bool($connection, $query, $queryParam);
 
 }
@@ -267,7 +292,7 @@ function db_add_user(mysqli $connection, array $param): bool
         'type' => 'ssss',
         'value' => $param
     ];
-    
+
     return db_query_execute_bool($connection, $query, $queryParam);
 
 }
@@ -280,27 +305,27 @@ function db_add_bet(mysqli $connection, array $param): bool
         'type' => 'iii',
         'value' => $param
     ];
-    
+
     return db_query_execute_bool($connection, $query, $queryParam);
 
 }
 
 function db_get_add_item_params($name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id): array
 {
- 
+
     return [$name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id];
 
 }
 
 function db_get_add_user_params($email, $name, $password, $message): array
 {
- 
+
     return [$email, $name, $password, $message];
 
 }
 function db_get_add_bet_params(int $lotId, int $price, int $userId): array
 {
- 
+
     return [$price, $userId, $lotId];
 
 }

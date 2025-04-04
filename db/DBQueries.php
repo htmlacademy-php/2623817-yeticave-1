@@ -143,7 +143,31 @@ define("DB_QUERIES", [
         price, 
         user_id, 
         lot_id) 
-    VALUES (now(),?,?,?)'
+    VALUES (now(),?,?,?)',
+
+    'getBetsListByUser' => 'SELECT 
+	    bets.date,
+ 	    bets.price,
+        bets.lot_id as lot_id,
+        lots.name as lot_name,
+        lots.image_path as lot_image_path,
+        lots.expiration_date as lot_expiration_date,
+        lots.winner_id as lot_winner_id,
+        lots.category_id as lot_category_id,
+        categories.name as lot_category_name,
+        author.contact_info as author_contact_info,
+        lots.winner_id as winner_id
+    FROM yeticave_1.bets as bets
+    INNER JOIN lots as lots
+        LEFT JOIN yeticave_1.categories as categories
+    	    ON lots.category_id = categories.id
+        LEFT JOIN yeticave_1.users as author
+        	ON lots.author_id = author.id
+        ON bets.lot_id = lots.id
+        
+    WHERE bets.user_id = ? and
+        &setCategoryCondition
+    ORDER BY bets.date DESC'
 ]);
 
 ?>
