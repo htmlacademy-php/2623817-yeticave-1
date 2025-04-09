@@ -57,19 +57,23 @@ function get_new_url(array $newParam)
 
 }
 
-function get_date_diff_string(DateTime $date1, DateTime $date2): string
+function get_date_diff_string(string $date1, string $date2): string
 {
+    $date1timestamp = strtotime($date1);
+    $date2timestamp = strtotime($date2);
 
-    $difference = $date1->diff($date2);
-
-    if($difference->d >= 1){
-
-    }elseif($difference->h >= 1){
-
+    $diff = $date2timestamp - $date1timestamp;
+    if($diff < 60){
+        return 'Только что';
+    }elseif($diff < (60*60)){
+        $minutes = floor($diff/60);
+        return "$minutes ".get_noun_plural_form($minutes,'минута', 'минуты', 'минут'). ' назад';
+    }elseif($diff < (60*60*24)){
+        $hours = floor($diff/(60*60));
+        return "$hours ".get_noun_plural_form($hours,'час', 'часа', 'часов'). ' назад';
     }else{
-        
-    }
-    return '';
+        return date("d.m.y в H:i",$date1timestamp);
+    };
 
 }
 ?>

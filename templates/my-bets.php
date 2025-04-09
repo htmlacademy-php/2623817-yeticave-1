@@ -57,10 +57,8 @@
                     <?= htmlspecialchars(get_value_in_money_type($myBet['price'])) ?>
                 </td>
                 <td class="rates__time">
-                    <?= $myBet['date'] ?>
                     <?php
-                    $date = new DateTime($myBet['date']);
-                    $dateDiffString = get_date_diff_string(new DateTime($myBet['date']), new DateTime());
+                    $dateDiffString = get_date_diff_string($myBet['date'], 'now');
                     echo $dateDiffString;
                     ?>
                 </td>
