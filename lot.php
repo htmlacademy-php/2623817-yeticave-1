@@ -53,6 +53,8 @@ if (!$mysqlConnection) {
 
 // информация о лоте
 $dbItemArray = db_get_item($mysqlConnection, $queryParam);
+$queryParam = ['lot_id' => $ParamId];
+$dbBetsArray = db_get_bets_by_lot($mysqlConnection, $queryParam);
 db_close_connection($mysqlConnection);
 
 if (count($dbItemArray) == 0) {
@@ -120,9 +122,14 @@ if ($itIsPost) {
         }
         $dbItem = $dbItemArray[0];
         $formData['cost'] = "";
+        $queryParam = ['lot_id' => $ParamId];
+        $dbBetsArray = db_get_bets_by_lot($mysqlConnection, $queryParam);
         db_close_connection($mysqlConnection);
     }
 }
+
+//Получить ставки по лоту
+
 
 //Вывод страницы
 //подготовка блока main
@@ -133,7 +140,8 @@ $lotPageParam = [
     'formData' => $formData,
     'errors' => $errors,
     'formError' => $formError,
-    'requestUri' => $_SERVER['REQUEST_URI']
+    'requestUri' => $_SERVER['REQUEST_URI'],
+    'betsArray' => $dbBetsArray
 ];
 $lotPageHTML = include_template('lot.php', $lotPageParam);
 

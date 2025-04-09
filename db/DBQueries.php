@@ -167,6 +167,17 @@ define("DB_QUERIES", [
         
     WHERE bets.user_id = ? and
         &setCategoryCondition
+    ORDER BY bets.date DESC',
+    
+    'getBetsListByLot' => 'SELECT 
+	    bets.date,
+ 	    bets.price,
+        users.name as user_name,
+        bets.user_id as user_id
+    FROM yeticave_1.bets as bets
+   	    INNER JOIN users as users
+     	    ON bets.user_id = users.id
+    WHERE bets.lot_id = ?
     ORDER BY bets.date DESC'
 ]);
 

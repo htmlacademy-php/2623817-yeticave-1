@@ -271,6 +271,23 @@ function db_get_bets_by_user(mysqli $connection, array $param): array
 
 }
 
+function db_get_bets_by_lot(mysqli $connection, array $param): array
+{
+
+    $query = DB_QUERIES['getBetsListByLot'];
+    $queryParam = [
+        'type' => 'i',
+        'value' => []
+    ];
+    if (isset($param['lot_id'])) {
+        $queryParam['value'][] = $param['lot_id'];
+    } else {
+        return [];
+    }
+    return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
 function db_add_item(mysqli $connection, array $param): bool
 {
 
