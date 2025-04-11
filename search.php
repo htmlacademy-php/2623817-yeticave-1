@@ -1,6 +1,5 @@
 <?php
 require_once('helpers.php');
-//require_once('db/DBConfig.php');
 require_once('db/DBFunctions.php');
 require_once('layout.php');
 
