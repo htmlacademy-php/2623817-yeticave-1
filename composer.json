@@ -1,0 +1,17 @@
+{
+    "name": "moisem/yeticave",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Moisem\\Yeticave\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Mikhail M"
+        }
+    ],
+    "require": {
+        "symfony/mailer": "^7.2"
+    }
+}

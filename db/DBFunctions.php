@@ -246,6 +246,19 @@ function db_get_user_by_email(mysqli $connection, array $param): array
 
 }
 
+function db_get_user_by_id(mysqli $connection, array $param): array
+{
+
+    $query = DB_QUERIES['getUserById'];
+    $queryParam = [
+        'type' => 'i',
+        'value' => $param
+        ];
+
+    return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
 function db_get_bets_by_user(mysqli $connection, array $param): array
 {
 
@@ -285,6 +298,15 @@ function db_get_bets_by_lot(mysqli $connection, array $param): array
         return [];
     }
     return db_query_execute_array($connection, $query, $queryParam);
+
+}
+
+function db_get_lots_to_set_winner_list(mysqli $connection): array
+{
+
+    $query = DB_QUERIES['getLotsToSetWinner'];
+
+    return db_query_execute_array($connection, $query, []);
 
 }
 
@@ -344,6 +366,26 @@ function db_get_add_bet_params(int $lotId, int $price, int $userId): array
 {
 
     return [$price, $userId, $lotId];
+
+}
+
+function db_set_lot_winner(mysqli $connection, array $param): bool
+{
+
+    $query = DB_QUERIES['setLotWinner'];
+    $queryParam = [
+        'type' => 'ii',
+        'value' => $param
+    ];
+
+    return db_query_execute_bool($connection, $query, $queryParam);
+
+}
+
+function db_get_set_lot_winner_params(int $lotId, int $winnerId): array
+{
+
+    return [$winnerId, $lotId];
 
 }
 

@@ -81,6 +81,15 @@ define("DB_QUERIES", [
     WHERE 
         users.email = ? LIMIT 1',
 
+    'getUserById' => 'SELECT 
+        users.id as id,
+        users.password as password,
+        users.name as name,
+        users.email as email
+    FROM yeticave_1.users as users 
+    WHERE 
+        users.id = ?',
+
     'addUser' => 'INSERT INTO yeticave_1.users(
     email, 
     name, 
@@ -168,7 +177,7 @@ define("DB_QUERIES", [
     WHERE bets.user_id = ? and
         &setCategoryCondition
     ORDER BY bets.date DESC',
-    
+
     'getBetsListByLot' => 'SELECT 
 	    bets.date,
  	    bets.price,
@@ -178,7 +187,33 @@ define("DB_QUERIES", [
    	    INNER JOIN users as users
      	    ON bets.user_id = users.id
     WHERE bets.lot_id = ?
-    ORDER BY bets.date DESC'
+    ORDER BY bets.date DESC',
+
+    'getLotsToSetWinner' => 'SELECT 
+	    lot_id as lot_id,
+	    tmp_bets.user_id as winner_id,
+        lots.name as lot_name
+    FROM lots 
+    INNER JOIN (
+        SELECT bets.*
+        FROM bets 
+        INNER JOIN (
+           SELECT 
+            	bets.lot_id as lot_id, 
+    	        MAX(bets.price) as price 
+            FROM BETS 
+            GROUP BY bets.lot_id)as max_bets 
+	        ON bets.lot_id = max_bets.lot_id 
+		       AND bets.price = max_bets.price
+	        ORDER BY bets.date) as tmp_bets
+    ON lots.id = tmp_bets.lot_id
+    WHERE lots.winner_id IS NULL 
+    AND lots.expiration_date < now()',
+
+    'setLotWinner' => 'UPDATE yeticave_1.lots 
+    SET yeticave_1.lots.winner_id = ?
+    WHERE yeticave_1.lots.id = ?',
 ]);
+
 
 ?>
