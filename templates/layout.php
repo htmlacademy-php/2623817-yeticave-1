@@ -23,14 +23,14 @@
         <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
         <nav class="user-menu">
-            <?php if ($isAuth == 1): 
+            <?php if ($isAuth === 1) {
                 //Если пользователь авторизован, выводим его данные?>
                 <div class="user-menu__logged">
                 <p><?=htmlspecialchars($userName)?></p>
                 <a class="user-menu__bets" href="my-bets.php">Мои ставки</a>
                 <a class="user-menu__logout" href="logout.php">Выход</a>
                 </div>
-            <?php else: 
+            <?php } else {
                 //Если пользователь не авторизован, выводим кнопки регистрации и входа ?>
                 <ul class="user-menu__list">
                 <li class="user-menu__item">
@@ -40,7 +40,7 @@
                     <a href="login.php">Вход</a>
                 </li>
                 </ul>
-            <?php endif; ?>
+            <?php } ?>
 
         </nav>
     </div>
@@ -54,12 +54,14 @@
     <nav class="nav">
         <ul class="nav__list container">
             <!--заполните этот список из массива категорий-->
-            <?php foreach($categoryList as $categoryId => $categoryName){?>
+            <?php foreach ($categoryList as $categoryId => $categoryName) {?>
                 <li class="nav__item">
-                <a href="<?="index.php?category=".$categoryId?>"><?= htmlspecialchars($categoryName)?></a>
+                <a href="<?= "index.php?category=" . $categoryId ?>">
+                    <?= htmlspecialchars($categoryName)?>
+                </a>
             </li>
-            <?php };?>
-            
+            <?php } ?>
+
         </ul>
     </nav>
     <div class="main-footer__bottom container">
