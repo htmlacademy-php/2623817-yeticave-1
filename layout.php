@@ -1,4 +1,5 @@
 <?php
+
 require_once('db/DBFunctions.php');
 
 /**
@@ -8,7 +9,7 @@ require_once('db/DBFunctions.php');
  * @param mixed $search
  * @return string
  */
-function get_layout_html(string $pageTitle, string $mainContent, $search = ''):string
+function get_layout_html(string $pageTitle, string $mainContent, $search = ''): string
 {
     //Получение данных страницы
     $mysqlConnection = db_get_connection();
