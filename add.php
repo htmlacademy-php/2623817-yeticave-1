@@ -4,8 +4,10 @@ require_once('helpers.php');
 require_once('db/DBFunctions.php');
 require_once('layout.php');
 
-if (session_status() != PHP_SESSION_ACTIVE) 
+if (session_status() != PHP_SESSION_ACTIVE) {
     session_start();
+}
+
 if (!isset($_SESSION['id'])) {
      http_response_code(403);
     exit();
@@ -50,7 +52,8 @@ $validateFunctions = [
     ],
     'category' => [
         'function' => function ($value, $params = []) {
-            return ((string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS)) && array_key_exists($value, $params['categoryList']);
+            return ((string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS)) &&
+                array_key_exists($value, $params['categoryList']);
         },
         'message' => 'Некорректная категория'
     ],
@@ -80,7 +83,7 @@ $validateFunctions = [
     ]
 ];
 $errors = [];
-foreach ($fieldNames as $fieldId => $fieldName) {
+foreach ($fieldNames as $fieldId) {
     $errors[$fieldId] = [
         'IsError' => false, // Флаг, что в поле есть ошибка
         'errorDescription' => ''
@@ -106,7 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($_POST as $key => $value) {
         $formData[$key] = htmlspecialchars($value);
     }
-    ;
     $itIsPost = true;
 }
 
@@ -126,11 +128,12 @@ if ($itIsPost) {
     foreach ($validateFunctions as $fieldId => $validationFunction) {
         $message = $validationFunction['message'];
         $isValid = $validationFunction['function'];
-        if (!$errors[$fieldId]['IsError'])
+        if (!$errors[$fieldId]['IsError']) {
             if (!$isValid($formData[$fieldId], ['categoryList' => $categoryList])) {
                 set_error($errors, $fieldId, true, $message);
                 $formError = true;
             }
+        }
     }
 
     //Проверка файла
@@ -140,10 +143,8 @@ if ($itIsPost) {
     upload_file($formData, $fieldName, $errors, $formError);
 }
 
-
 // если форма была отправлена и нет оишбок - запись в БД
 if ($itIsPost && !$formError) {
-
     $mysqlConnection = db_get_connection();
     if (!$mysqlConnection) {
         http_response_code(500);
@@ -158,7 +159,7 @@ if ($itIsPost && !$formError) {
         $formData['lot-date'],
         $formData['lot-step'],
         $_SESSION['id'],
-        NULL,
+        null,
         $formData['category']
     );
     $queryResult = db_add_item($mysqlConnection, $queryParam);
@@ -166,38 +167,36 @@ if ($itIsPost && !$formError) {
 
     if ($queryResult) {
         header('Location: index.php');
-        exit();
     } else {
         http_response_code(500);
-        exit();
     }
-
-
+    exit();
 }
 
 //Вывод страницы
 //подготовка блока main
-$addlotPageParam = [
+$addLotPageParam = [
     'categoryList' => $categoryList,
     'formData' => $formData,
     'errors' => $errors,
     'formError' => $formError
 ];
-$addlotPageHTML = include_template('add-lot.php', $addlotPageParam);
+$addLotPageHTML = include_template('add-lot.php', $addLotPageParam);
 
 
 //подготовка блока layout
-$layoutPageHTML = get_layout_html('Добавление лота',$addlotPageHTML);;
+$layoutPageHTML = get_layout_html('Добавление лота', $addLotPageHTML);
 
 print ($layoutPageHTML);
 
-function set_error(&$errors, string $fieldName, bool $isError, string $errorMessage)
-{
-    $fieldError = &$errors[$fieldName];
-    $fieldError['IsError'] = $isError;
-    $fieldError['errorDescription'] = ($fieldError['errorDescription'] ?? '') . $errorMessage;
-}
-
+/**
+ * Summary of upload_file
+ * @param mixed $formData
+ * @param mixed $fieldName
+ * @param mixed $errors
+ * @param mixed $formError
+ * @return void
+ */
 function upload_file(&$formData, $fieldName, &$errors, &$formError)
 {
 
@@ -231,4 +230,3 @@ function upload_file(&$formData, $fieldName, &$errors, &$formError)
         $formError = true;
     }
 }
-?>
