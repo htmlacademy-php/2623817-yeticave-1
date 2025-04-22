@@ -32,22 +32,27 @@ foreach ($lotsList as $lotId => $lot_data) {
         if (count($dbUserList) > 0) {
             //Отправить письмо
             $textData = [
-                'lotUrl' => $_SERVER['HTTP_HOST'].'/lot.php?id='.$lotId,
-                'myBetsUrl' => $_SERVER['HTTP_HOST'].'/my-bets.php',
+                'lotUrl' => $_SERVER['HTTP_HOST'] . '/lot.php?id=' . $lotId,
+                'myBetsUrl' => $_SERVER['HTTP_HOST'] . '/my-bets.php',
                 'lotName' => $lot_data['lot_name'],
-                'userName' => $dbUserList[0]['name']   
+                'userName' => $dbUserList[0]['name']
             ];
-            $textHTML = include_template('email.php',$textData);
+            $textHTML = include_template('email.php', $textData);
             send_email('keks@phpdemo.ru', $dbUserList[0]['email'], "Ваша ставка победила", $textHTML);
         }
-        
-        
     }
 }
 
 db_close_connection($mysqlConnection);
 
-
+/**
+ * Summary of send_email
+ * @param string $from
+ * @param string $to
+ * @param string $subject
+ * @param string $text
+ * @return bool
+ */
 function send_email(string $from, string $to, string $subject, string $text): bool
 {
 
@@ -70,10 +75,6 @@ function send_email(string $from, string $to, string $subject, string $text): bo
         //игнорируем
         return false;
     }
-    ;
 
     return true;
-
 }
-
-?>
