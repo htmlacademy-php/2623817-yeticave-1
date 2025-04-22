@@ -3,13 +3,13 @@
 define("DB_QUERIES", [
 
     //Получение списка категорий
-    'getCategoryList' => "SELECT categories.id as id, categories.name as name 
+    'getCategoryList' => "SELECT categories.id as id, categories.name as name
         FROM yeticave_1.categories as categories;",
 
-    //Получение списка открытых лотов. 
+    //Получение списка открытых лотов.
     //Считаем, что лот открыт, если не настала дата окончания
     //Считаем, что цену = максимальная ставка. если ставок нет цена = первоначальная цена
-    'getItemList' => "SELECT 
+    'getItemList' => "SELECT
         lots.id as lot_id,
         lots.name as lot_name,
         lots.start_price as start_price,
@@ -25,14 +25,14 @@ define("DB_QUERIES", [
             bets.lot_id as lot_id,
             max(bets.price) as price
             FROM yeticave_1.bets as bets
-            GROUP BY bets.lot_id) as prices ON 
+            GROUP BY bets.lot_id) as prices ON
             lots.id = prices.lot_id
     WHERE
-        lots.expiration_date > NOW() 
+        lots.expiration_date > NOW()
         AND &setIdCondition
     order by created_at DESC",
 
-    'getItem' => "SELECT 
+    'getItem' => "SELECT
         lots.id as lot_id,
         lots.created_at as lot_created_at,
         lots.name as lot_name,
@@ -54,51 +54,51 @@ define("DB_QUERIES", [
             bets.lot_id as lot_id,
             max(bets.price) as price
             FROM yeticave_1.bets as bets
-            GROUP BY bets.lot_id) as prices ON 
+            GROUP BY bets.lot_id) as prices ON
             lots.id = prices.lot_id
     WHERE
         lots.id = ?",
 
     'addItem' => 'INSERT INTO yeticave_1.lots(
-    created_at, 
-    name, 
-    description, 
-    image_path, 
-    start_price, 
-    expiration_date, 
-    price_step, 
-    author_id, 
-    winner_id, 
-    category_id) 
+    created_at,
+    name,
+    description,
+    image_path,
+    start_price,
+    expiration_date,
+    price_step,
+    author_id,
+    winner_id,
+    category_id)
     VALUES (now(),?,?,?,?,?,?,?,?,?)',
 
-    'getUserByEmail' => 'SELECT 
+    'getUserByEmail' => 'SELECT
         users.id as id,
         users.password as password,
         users.name as name,
         users.email as email
-    FROM users 
-    WHERE 
+    FROM users
+    WHERE
         users.email = ? LIMIT 1',
 
-    'getUserById' => 'SELECT 
+    'getUserById' => 'SELECT
         users.id as id,
         users.password as password,
         users.name as name,
         users.email as email
-    FROM yeticave_1.users as users 
-    WHERE 
+    FROM yeticave_1.users as users
+    WHERE
         users.id = ?',
 
     'addUser' => 'INSERT INTO yeticave_1.users(
-    email, 
-    name, 
-    password, 
-    contact_info, 
-    created_at) 
+    email,
+    name,
+    password,
+    contact_info,
+    created_at)
     VALUES (?,?,?,?,now())',
 
-    'getItemListFts' => "SELECT 
+    'getItemListFts' => "SELECT
         lots.id as lot_id,
         lots.name as lot_name,
         lots.start_price as start_price,
@@ -114,15 +114,15 @@ define("DB_QUERIES", [
             bets.lot_id as lot_id,
             max(bets.price) as price
             FROM yeticave_1.bets as bets
-            GROUP BY bets.lot_id) as prices ON 
+            GROUP BY bets.lot_id) as prices ON
             lots.id = prices.lot_id
     WHERE
-        lots.expiration_date > NOW() 
+        lots.expiration_date > NOW()
         AND &setIdCondition
         AND &setFtsCondition
     order by created_at DESC",
 
-    'getItemListFtsLimit' => "SELECT 
+    'getItemListFtsLimit' => "SELECT
         lots.id as lot_id,
         lots.name as lot_name,
         lots.start_price as start_price,
@@ -138,10 +138,10 @@ define("DB_QUERIES", [
             bets.lot_id as lot_id,
             max(bets.price) as price
             FROM yeticave_1.bets as bets
-            GROUP BY bets.lot_id) as prices ON 
+            GROUP BY bets.lot_id) as prices ON
             lots.id = prices.lot_id
     WHERE
-        lots.expiration_date > NOW() 
+        lots.expiration_date > NOW()
         AND &setIdCondition
         AND &setFtsCondition
     order by created_at DESC
@@ -149,12 +149,12 @@ define("DB_QUERIES", [
 
     'addBet' => 'INSERT INTO yeticave_1.bets(
         date,
-        price, 
-        user_id, 
-        lot_id) 
+        price,
+        user_id,
+        lot_id)
     VALUES (now(),?,?,?)',
 
-    'getBetsListByUser' => 'SELECT 
+    'getBetsListByUser' => 'SELECT
 	    bets.date,
  	    bets.price,
         bets.lot_id as lot_id,
@@ -173,12 +173,12 @@ define("DB_QUERIES", [
         LEFT JOIN yeticave_1.users as author
         	ON lots.author_id = author.id
         ON bets.lot_id = lots.id
-        
+
     WHERE bets.user_id = ? and
         &setCategoryCondition
     ORDER BY bets.date DESC',
 
-    'getBetsListByLot' => 'SELECT 
+    'getBetsListByLot' => 'SELECT
 	    bets.date,
  	    bets.price,
         users.name as user_name,
@@ -189,31 +189,28 @@ define("DB_QUERIES", [
     WHERE bets.lot_id = ?
     ORDER BY bets.date DESC',
 
-    'getLotsToSetWinner' => 'SELECT 
+    'getLotsToSetWinner' => 'SELECT
 	    lot_id as lot_id,
 	    tmp_bets.user_id as winner_id,
         lots.name as lot_name
-    FROM lots 
+    FROM lots
     INNER JOIN (
         SELECT bets.*
-        FROM bets 
+        FROM bets
         INNER JOIN (
-           SELECT 
-            	bets.lot_id as lot_id, 
-    	        MAX(bets.price) as price 
-            FROM BETS 
-            GROUP BY bets.lot_id)as max_bets 
-	        ON bets.lot_id = max_bets.lot_id 
+           SELECT
+            	bets.lot_id as lot_id,
+    	        MAX(bets.price) as price
+            FROM BETS
+            GROUP BY bets.lot_id)as max_bets
+	        ON bets.lot_id = max_bets.lot_id
 		       AND bets.price = max_bets.price
 	        ORDER BY bets.date) as tmp_bets
     ON lots.id = tmp_bets.lot_id
-    WHERE lots.winner_id IS NULL 
+    WHERE lots.winner_id IS NULL
     AND lots.expiration_date < now()',
 
-    'setLotWinner' => 'UPDATE yeticave_1.lots 
+    'setLotWinner' => 'UPDATE yeticave_1.lots
     SET yeticave_1.lots.winner_id = ?
     WHERE yeticave_1.lots.id = ?',
 ]);
-
-
-?>
