@@ -23,7 +23,7 @@
         <a class="main-header__add-lot button" href="add.php">Добавить лот</a>
 
         <nav class="user-menu">
-            <?php if ($isAuth === 1) {
+            <?php if ($isAuth === true) {
                 //Если пользователь авторизован, выводим его данные?>
                 <div class="user-menu__logged">
                 <p><?=htmlspecialchars($userName)?></p>
