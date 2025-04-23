@@ -37,25 +37,25 @@ $requiredFieldNames = [
 ];
 $validateFunctions = [
     'email' => [
-        'function' => function (string $value):bool {
+        'function' => function (string $value): bool {
             return $value === filter_var($value, FILTER_VALIDATE_EMAIL);
         },
         'message' => 'Некорректная почта'
     ],
     'password' => [
-        'function' => function (string $value):bool {
+        'function' => function (string $value): bool {
             return $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректный пароль'
     ],
     'name' => [
-        'function' => function (string $value):bool {
+        'function' => function (string $value): bool {
             return $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректное имя'
     ],
     'message' => [
-        'function' => function (string $value):bool {
+        'function' => function (string $value): bool {
             return $value === filter_var($value, FILTER_UNSAFE_RAW);
         },
         'message' => 'Некорректные контактные данные'
@@ -137,7 +137,7 @@ if ($itIsPost && !$formError) {
     db_close_connection($mysqlConnection);
 
     if ($queryResult) {
-        header('Location: index.php'); // Пока страницы входа нет, переходим на главную
+        header('Location: login.php');
     } else {
         http_response_code(500);
     }
