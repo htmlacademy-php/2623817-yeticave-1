@@ -23,7 +23,7 @@ $validateFunctions = [
     ]
 ];
 $errors = [];
-foreach ($fieldNames as $fieldId) {
+foreach ($fieldNames as $fieldId => $fieldId) {
     $errors[$fieldId] = [
         'IsError' => false, // Флаг, что в поле есть ошибка
         'errorDescription' => ''
