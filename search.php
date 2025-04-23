@@ -54,8 +54,8 @@ if (count($itemList) > 0) {
     //Посчитать количество страниц
     $numberOfPages = ceil(count($itemList) / DB_SEARCH_NUMBER_OF_ITEMS_ON_PAGE);
     $paramPage = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
-    $queryParam['offset'] = is_int($paramPage) ? $paramPage - 1 : 0;
-    $currentPage = $queryParam['offset'] + 1;
+    $queryParam['offset'] = is_int($paramPage) ? ($paramPage - 1) * DB_SEARCH_NUMBER_OF_ITEMS_ON_PAGE : 0;
+    $currentPage = $paramPage;
     if ($currentPage > $numberOfPages || $currentPage < 1) {
         http_response_code(404);
         exit();
