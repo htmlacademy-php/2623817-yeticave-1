@@ -163,13 +163,13 @@ if ($itIsPost && !$formError) {
         $formData['category']
     );
     $queryResult = db_add_item($mysqlConnection, $queryParam);
-    db_close_connection($mysqlConnection);
 
     if ($queryResult) {
-        header('Location: index.php');
+        header("Location: lot.php?id=$mysqlConnection->insert_id");
     } else {
         http_response_code(500);
     }
+    db_close_connection($mysqlConnection);
     exit();
 }
 
