@@ -51,6 +51,9 @@ $mainPageHTML = include_template('main.php', $mainData);
 
 
 //подготовка блока layout
-$mainPageHTML = get_layout_html('Главная страница', $mainPageHTML);
+$mainPageHTML = get_layout_html(
+    ($paramCategory === null) ? 'Главная страница' : 'Все лоты в категории ' . $categoryList[$paramCategory] ?? '',
+    $mainPageHTML
+);
 
 print($mainPageHTML);
