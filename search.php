@@ -17,7 +17,7 @@ if (!$mysqlConnection) {
 
 //Список категорий{
 $dbCategoryList = db_get_category_list($mysqlConnection);
-$categoryList = array_column($dbCategoryList, 'name', 'id');
+$categoryList = array_column($dbCategoryList, 'name', 'label');
 //}Список категорий
 
 //Список товаров{

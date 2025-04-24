@@ -98,7 +98,7 @@ if (!$mysqlConnection) {
 }
 //Список категорий{
 $dbCategoryList = db_get_category_list($mysqlConnection);
-$categoryList = array_column($dbCategoryList, 'name', 'id');
+$categoryListInput = array_column($dbCategoryList, 'name', 'id');
 
 db_close_connection($mysqlConnection);
 
@@ -129,7 +129,7 @@ if ($itIsPost) {
         $message = $validationFunction['message'];
         $isValid = $validationFunction['function'];
         if (!$errors[$fieldId]['IsError']) {
-            if (!$isValid($formData[$fieldId], ['categoryList' => $categoryList])) {
+            if (!$isValid($formData[$fieldId], ['categoryList' => $categoryListInput])) {
                 set_error($errors, $fieldId, true, $message);
                 $formError = true;
             }
@@ -176,7 +176,7 @@ if ($itIsPost && !$formError) {
 //Вывод страницы
 //подготовка блока main
 $addLotPageParam = [
-    'categoryList' => $categoryList,
+    'categoryList' => $categoryListInput,
     'formData' => $formData,
     'errors' => $errors,
     'formError' => $formError

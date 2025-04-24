@@ -20,7 +20,7 @@ function get_layout_html(string $pageTitle, string $mainContent, $search = ''): 
 
     //Список категорий{
     $dbCategoryList = db_get_category_list($mysqlConnection);
-    $categoryList = array_column($dbCategoryList, 'name', 'id');
+    $categoryList = array_column($dbCategoryList, 'name', 'label');
     //}Список категорий
     db_close_connection($mysqlConnection);
 

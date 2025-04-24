@@ -3,7 +3,7 @@
 define("DB_QUERIES", [
 
     //Получение списка категорий
-    'getCategoryList' => "SELECT categories.id as id, categories.name as name
+    'getCategoryList' => "SELECT categories.id as id, categories.label as label, categories.name as name
         FROM yeticave_1.categories as categories;",
 
     //Получение списка открытых лотов.
@@ -15,7 +15,7 @@ define("DB_QUERIES", [
         lots.start_price as start_price,
         lots.image_path as image_path,
         categories.name as category,
-        lots.category_id as category_id,
+        categories.label as category_label,
         lots.expiration_date as expiration_date,
         IFNULL(prices.price,lots.start_price) as price -- можно сделать 'prices.price + lots.price_step', если нужна последняя ставка + шаг
     FROM yeticave_1.lots as lots
@@ -38,7 +38,7 @@ define("DB_QUERIES", [
         lots.start_price as start_price,
         lots.image_path as image_path,
         categories.name as category,
-        lots.category_id as category_id,
+        categories.label as category_label,
         lots.expiration_date as expiration_date,
         IFNULL(prices.price,lots.start_price) as price -- можно сделать 'prices.price + lots.price_step', если нужна последняя ставка + шаг
     FROM yeticave_1.lots as lots
@@ -67,7 +67,7 @@ define("DB_QUERIES", [
         lots.price_step as lot_price_step,
         lots.author_id as lot_author_id,
         lots.winner_id as lot_winner_id,
-        lots.category_id as category_id,
+        categories.label as category_label,
         categories.name as category,
         IFNULL(prices.price,lots.start_price) as price,
         IFNULL(prices.price + lots.price_step,lots.start_price) as min_bet
@@ -128,7 +128,7 @@ define("DB_QUERIES", [
         lots.start_price as start_price,
         lots.image_path as image_path,
         categories.name as category,
-        lots.category_id as category_id,
+        categories.label as category_label,
         lots.expiration_date as expiration_date,
         IFNULL(prices.price,lots.start_price) as price -- можно сделать 'prices.price + lots.price_step', если нужна последняя ставка + шаг
     FROM yeticave_1.lots as lots
@@ -152,7 +152,7 @@ define("DB_QUERIES", [
         lots.start_price as start_price,
         lots.image_path as image_path,
         categories.name as category,
-        lots.category_id as category_id,
+        categories.label as category_label,
         lots.expiration_date as expiration_date,
         IFNULL(prices.price,lots.start_price) as price -- можно сделать 'prices.price + lots.price_step', если нужна последняя ставка + шаг
     FROM yeticave_1.lots as lots
@@ -186,7 +186,7 @@ define("DB_QUERIES", [
         lots.image_path as lot_image_path,
         lots.expiration_date as lot_expiration_date,
         lots.winner_id as lot_winner_id,
-        lots.category_id as lot_category_id,
+        categories.label as lot_category_label,
         categories.name as lot_category_name,
         author.contact_info as author_contact_info,
         lots.winner_id as winner_id

@@ -156,7 +156,7 @@ function db_get_item_list(mysqli $connection, array $param): array
         'type' => '',
         'value' => []];
     if (isset($param['category'])) {
-        $query  = str_replace('&setIdCondition', 'lots.category_id = ?', $query);
+        $query  = str_replace('&setIdCondition', 'categories.label = ?', $query);
         //Добавить параметр Категория
         $queryParam['type'] .= 's';
         $queryParam['value'][] = $param['category'];
@@ -179,7 +179,7 @@ function db_get_item_list_limit(mysqli $connection, array $param): array
         'type' => '',
         'value' => []];
     if (isset($param['category'])) {
-        $query  = str_replace('&setIdCondition', 'lots.category_id = ?', $query);
+        $query  = str_replace('&setIdCondition', 'categories.label = ?', $query);
         //Добавить параметр Категория
         $queryParam['type'] .= 's';
         $queryParam['value'][] = $param['category'];
@@ -220,7 +220,7 @@ function db_get_item_list_fts(mysqli $connection, array $param): array
     if (isset($param['category'])) {
         $query  = str_replace(
             '&setIdCondition',
-            'lots.category_id = ?',
+            'categories.label = ?',
             $query
         );
         //Добавить параметр Категория
@@ -263,7 +263,7 @@ function db_get_item_list_fts_limit(mysqli $connection, array $param): array
         'value' => []];
 
     if (isset($param['category'])) {
-        $query  = str_replace('&setIdCondition', 'lots.category_id = ?', $query);
+        $query  = str_replace('&setIdCondition', 'categories.label = ?', $query);
         //Добавить параметр Категория
         $queryParam['type'] .= 's';
         $queryParam['value'][] = $param['category'];
@@ -383,7 +383,7 @@ function db_get_bets_by_user(mysqli $connection, array $param): array
         return [];
     }
     if (isset($param['category'])) {
-        $query = str_replace('&setCategoryCondition', 'lots.category_id = ?', $query);
+        $query = str_replace('&setCategoryCondition', 'categories.label = ?', $query);
         //Добавить параметр Категория
         $queryParam['type'] .= 's';
         $queryParam['value'][] = $param['category'];
@@ -487,10 +487,10 @@ function db_add_bet(mysqli $connection, array $param): bool
  * @param mixed $price_step
  * @param mixed $author_id
  * @param mixed $winner_id
- * @param mixed $category_id
+ * @param mixed $category_label
  * @return array
  */
-function db_get_add_item_params($name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_id): array
+function db_get_add_item_params($name, $description, $image_path, $start_price, $expiration_date, $price_step, $author_id, $winner_id, $category_label): array
 {
     return [
         $name,
@@ -501,7 +501,7 @@ function db_get_add_item_params($name, $description, $image_path, $start_price, 
         $price_step,
         $author_id,
         $winner_id,
-        $category_id];
+        $category_label];
 }
 
 /**
