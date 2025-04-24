@@ -23,7 +23,7 @@ $validateFunctions = [
     ]
 ];
 $errors = [];
-foreach ($fieldNames as $fieldId => $fieldName) {
+foreach ($fieldNames as $fieldId => $fieldId) {
     $errors[$fieldId] = [
         'IsError' => false, // Флаг, что в поле есть ошибка
         'errorDescription' => ''
@@ -70,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($_POST as $key => $value) {
         $formData[$key] = htmlspecialchars($value);
     }
-    ;
     $itIsPost = true;
 }
 
@@ -87,11 +86,12 @@ if ($itIsPost) {
     foreach ($validateFunctions as $fieldId => $validationFunction) {
         $message = $validationFunction['message'];
         $isValid = $validationFunction['function'];
-        if (!$errors[$fieldId]['IsError'])
+        if (!$errors[$fieldId]['IsError']) {
             if (!$isValid($formData[$fieldId], ['minBet' => $dbItem['min_bet']])) {
                 set_error($errors, $fieldId, true, $message);
                 $formError = true;
             }
+        }
     }
 
     //Добавление ставки
@@ -150,11 +150,3 @@ $lotPageHTML = include_template('lot.php', $lotPageParam);
 $layoutPageHTML = get_layout_html($dbItem['lot_name'], $lotPageHTML);
 
 print ($layoutPageHTML);
-
-function set_error(&$errors, string $fieldName, bool $isError, string $errorMessage)
-{
-    $fieldError = &$errors[$fieldName];
-    $fieldError['IsError'] = $isError;
-    $fieldError['errorDescription'] = ($fieldError['errorDescription'] ?? '') . $errorMessage;
-}
-?>

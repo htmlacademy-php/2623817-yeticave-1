@@ -3,8 +3,9 @@
 require_once('helpers.php');
 require_once('layout.php');
 
-if (session_status() != PHP_SESSION_ACTIVE) 
+if (session_status() != PHP_SESSION_ACTIVE) {
     session_start();
+}
 
 $formError = false;
 $formData = [];
@@ -23,20 +24,20 @@ $requiredFieldNames = [
 ];
 $validateFunctions = [
     'email' => [
-        'function' => function ($value, $params = []) {
+        'function' => function ($value) {
             return filter_var($value, FILTER_VALIDATE_EMAIL);
         },
         'message' => 'Некорректная почта'
     ],
     'password' => [
-        'function' => function ($value, $params = []) {
+        'function' => function ($value) {
             return (string) $value === filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
         },
         'message' => 'Некорректный пароль'
     ]
 ];
 $errors = [];
-foreach ($fieldNames as $fieldId => $fieldName) {
+foreach ($fieldNames as $fieldId => $fieldId) {
     $errors[$fieldId] = [
         'IsError' => false, // Флаг, что в поле есть ошибка
         'errorDescription' => ''
@@ -50,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     foreach ($_POST as $key => $value) {
         $formData[$key] = htmlspecialchars($value);
     }
-    ;
     $itIsPost = true;
 }
 
@@ -68,19 +68,18 @@ if ($itIsPost) {
     foreach ($validateFunctions as $fieldId => $validationFunction) {
         $message = $validationFunction['message'];
         $isValid = $validationFunction['function'];
-        if (!$errors[$fieldId]['IsError'])
+        if (!$errors[$fieldId]['IsError']) {
             if (!$isValid($formData[$fieldId])) {
                 set_error($errors, $fieldId, true, $message);
                 $formError = true;
             }
+        }
     }
-
-
 }
 
 // Проверка, что есть пользователь по этому email
 $dbUserList = [];
-if($itIsPost && !$formError){
+if ($itIsPost && !$formError) {
     $mysqlConnection = db_get_connection();
     if (!$mysqlConnection) {
         http_response_code(500);
@@ -88,10 +87,10 @@ if($itIsPost && !$formError){
     }
     $fieldId = 'email';
     $dbUserList = db_get_user_by_email($mysqlConnection, ['email' => $formData[$fieldId]]);
-    if(count($dbUserList) === 0){
+    if (count($dbUserList) === 0) {
         $message = 'Некорректная почта';
         set_error($errors, $fieldId, true, $message);
-        $formError = true;   
+        $formError = true;
     }
     db_close_connection($mysqlConnection);
 }
@@ -102,13 +101,13 @@ if ($itIsPost && !$formError && count($dbUserList) > 0) {
     $passwordFormFieldId = 'password';
     $passwordDbFieldId = 'password';
     $passwordIsCorrect = password_verify($formData[$passwordFormFieldId], $dbUser[$passwordDbFieldId]);
-    if($passwordIsCorrect){
+    if ($passwordIsCorrect) {
         $a = session_start();
         $_SESSION['id'] = $dbUser['id'];
         $_SESSION['name'] = $dbUser['name'];
         $_SESSION['email'] = $dbUser['email'];
         header('Location: index.php'); // Переход на главную страницу
-    }else{
+    } else {
         $fieldId = 'email';
         $message = 'Некорректный пароль';
         set_error($errors, $fieldId, true, $message);
@@ -127,15 +126,6 @@ $loginPageHTML = include_template('login.php', $loginPageParam);
 
 
 //подготовка блока layout
-$layoutPageHTML = get_layout_html('Регистрация',$loginPageHTML);
+$layoutPageHTML = get_layout_html('Регистрация', $loginPageHTML);
 
 print ($layoutPageHTML);
-
-function set_error(&$errors, string $fieldName, bool $isError, string $errorMessage)
-{
-    $fieldError = &$errors[$fieldName];
-    $fieldError['IsError'] = $isError;
-    $fieldError['errorDescription'] = ($fieldError['errorDescription'] ?? '') . $errorMessage;
-}
-
-?>

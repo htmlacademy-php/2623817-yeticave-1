@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`users` (
 ;
 
 CREATE TABLE IF NOT EXISTS `yeticave_1`.`categories` (
-  `id` VARCHAR(45) NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(45) NOT NULL UNIQUE,
   `name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`))
 ;
@@ -28,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`lots` (
   `price_step` INT UNSIGNED NOT NULL,
   `author_id` INT NULL,
   `winner_id` INT NULL,
-  `category_id` VARCHAR(45) NULL,
+  `category_id` INT NULL,
   PRIMARY KEY (`id`),
   INDEX `author_idx` (`author_id` ASC) VISIBLE,
   INDEX `winner_idx` (`winner_id` ASC) VISIBLE,
@@ -50,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `yeticave_1`.`lots` (
     ON UPDATE CASCADE)
 ;
 
-CREATE FULLTEXT INDEX lot_ft_search ON `yeticave_1`.`lots`(name, description)
+CREATE FULLTEXT INDEX lot_ft_search ON `yeticave_1`.`lots`(name, description);
 
 CREATE TABLE IF NOT EXISTS `yeticave_1`.`bets` (
   `id` INT NOT NULL AUTO_INCREMENT,

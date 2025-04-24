@@ -1,6 +1,6 @@
 /* Вставка данных*/
 /*Таблица categories*/
-INSERT INTO yeticave_1.categories (id,name) VALUES 
+INSERT INTO yeticave_1.categories (label,name) VALUES 
 ('boards'		,'Доски и лыжи'),
 ('attachment'	,'Крепления'),
 ('boots'		,'Ботинки'),
@@ -29,12 +29,12 @@ DELETE FROM yeticave_1.lots;*/
 /*Таблица lots*/
 /*- вставит ИД, хоть они и генерируются, но есть ссылки (ИД) в таблице ставок*/
 INSERT INTO yeticave_1.lots(id,created_at, name, description, image_path, start_price, expiration_date, price_step, author_id, winner_id, category_id) VALUES
-(1,'2025-01-01', '2014 Rossignol District Snowboard', 'здесь какое-то описание','img/lot-1.jpg',1099,'2025-03-10',50,11,NULL,'boards'),
-(2,'2025-01-01', 'DC Ply Mens 2016/2017 Snowboard', 'здесь какое-то описание','img/lot-2.jpg',159999,'2025-03-10',1000,11,NULL,'boards'),
-(3,'2025-02-01', 'Крепления Union Contact Pro 2015 года размер L/XL', 'здесь какое-то описание','img/lot-3.jpg',8000,'2025-02-28',500,12,NULL,'attachment'),
-(4,'2025-01-04', 'Ботинки для сноуборда DC Mutiny Charocal', 'здесь какое-то описание','img/lot-4.jpg',10999,'2025-03-01',500,12,NULL,'boots'), 
-(5,'2025-01-03', 'Куртка для сноуборда DC Mutiny Charocall', 'здесь какое-то описание','img/lot-5.jpg',7500,'2025-02-24 22:18',500,12,13,'clothing'), 
-(6,'2025-01-02', 'Маска Oakley Canopy', 'здесь какое-то описание','img/lot-6.jpg',5400,'2025-02-25 23:20',500,12,15,'other'); 
+(1,'2025-01-01', '2014 Rossignol District Snowboard', 'здесь какое-то описание','img/lot-1.jpg',1099,'2025-04-30',50,11,NULL,1),
+(2,'2025-01-01', 'DC Ply Mens 2016/2017 Snowboard', 'здесь какое-то описание','img/lot-2.jpg',159999,'2025-04-30',1000,11,NULL,1),
+(3,'2025-02-01', 'Крепления Union Contact Pro 2015 года размер L/XL', 'здесь какое-то описание','img/lot-3.jpg',8000,'2025-04-30',500,12,NULL,2),
+(4,'2025-01-04', 'Ботинки для сноуборда DC Mutiny Charocal', 'здесь какое-то описание','img/lot-4.jpg',10999,'2025-04-30',500,12,NULL,3), 
+(5,'2025-01-03', 'Куртка для сноуборда DC Mutiny Charocall', 'здесь какое-то описание','img/lot-5.jpg',7500,'2025-04-30',500,12,13,4), 
+(6,'2025-01-02', 'Маска Oakley Canopy', 'здесь какое-то описание','img/lot-6.jpg',5400,'2025-04-30',500,12,15,6); 
 
 /*Таблица bets*/
 INSERT INTO yeticave_1.bets (date,price,user_id,lot_id) VALUES
