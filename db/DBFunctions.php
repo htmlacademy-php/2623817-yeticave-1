@@ -167,6 +167,43 @@ function db_get_item_list(mysqli $connection, array $param): array
 }
 
 /**
+ * Summary of db_get_item_list
+ * @param mysqli $connection
+ * @param array $param
+ * @return array
+ */
+function db_get_item_list_limit(mysqli $connection, array $param): array
+{
+    $query = DB_QUERIES['getItemListLimit'];
+    $queryParam = [
+        'type' => '',
+        'value' => []];
+    if (isset($param['category'])) {
+        $query  = str_replace('&setIdCondition', 'lots.category_id = ?', $query);
+        //Добавить параметр Категория
+        $queryParam['type'] .= 's';
+        $queryParam['value'][] = $param['category'];
+    } else {
+        $query  = str_replace('&setIdCondition', 'TRUE', $query);
+    }
+
+    //Limit
+    $queryParam['type'] .= 'i';
+    $queryParam['value'][] = DB_SEARCH_NUMBER_OF_ITEMS_ON_PAGE;
+
+    //offset
+    if (isset($param['offset'])) {
+        $queryParam['type'] .= 'i';
+        $queryParam['value'][] = $param['offset'];
+    } else {
+        $queryParam['type'] .= 'i';
+        $queryParam['value'][] = 0;
+    }
+
+    return db_query_execute_array($connection, $query, $queryParam);
+}
+
+/**
  * Summary of db_get_item_list_fts
  * @param mysqli $connection
  * @param array $param

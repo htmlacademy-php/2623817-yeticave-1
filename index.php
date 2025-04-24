@@ -37,6 +37,24 @@ if ($paramCategory !== null) {
 
 $dbItemList = db_get_item_list($mysqlConnection, $queryParam);
 $itemList = $dbItemList;
+
+//Пагинация
+$numberOfPages = 1;
+$currentPage = 1;
+if (count($itemList) > 0) {
+    //Посчитать количество страниц
+    $numberOfPages = ceil(count($itemList) / DB_SEARCH_NUMBER_OF_ITEMS_ON_PAGE);
+    $paramPage = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT);
+    $queryParam['offset'] = is_int($paramPage) ? ($paramPage - 1) * DB_SEARCH_NUMBER_OF_ITEMS_ON_PAGE : 0;
+    $currentPage = is_int($paramPage) ? ($paramPage) : 1;
+    if ($currentPage > $numberOfPages || $currentPage < 1) {
+        http_response_code(404);
+        exit();
+    }
+    //Получить ограниченное количество товаров
+    $dbItemList = db_get_item_list_limit($mysqlConnection, $queryParam);
+    $itemList = $dbItemList;
+}
 //}Список товаров
 
 db_close_connection($mysqlConnection);
@@ -45,7 +63,9 @@ db_close_connection($mysqlConnection);
 //подготовка блока main
 $mainData = [
     'categoryList' => $categoryList,
-    'itemList' => $itemList
+    'itemList' => $itemList,
+    'numberOfPages' => $numberOfPages,
+    'currentPage' => $currentPage
 ];
 $mainPageHTML = include_template('main.php', $mainData);
 

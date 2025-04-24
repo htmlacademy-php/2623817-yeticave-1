@@ -55,3 +55,19 @@
             <?php } ?>
         </ul>
     </section>
+    <?php if ($numberOfPages > 1) { ?>
+        <ul class="pagination-list">
+            <?php if ($currentPage <> 1) { ?>
+                <li class="pagination-item pagination-item-prev"><a
+                        href="<?= get_new_url(['page' => $currentPage - 1]) ?>">Назад</a></li>
+            <?php } ?>
+            <?php for ($pageIndex = 1; $pageIndex <= $numberOfPages; $pageIndex++) { ?>
+                <li class="pagination-item <?= $pageIndex === $currentPage ? 'pagination-item-active' : '' ?>"><a
+                        href="<?= get_new_url(['page' => $pageIndex]) ?>"><?= $pageIndex ?></a></li>
+            <?php } ?>
+            <?php if ($currentPage <> $numberOfPages) { ?>
+                <li class="pagination-item pagination-item-next"><a
+                        href="<?= get_new_url(['page' => $currentPage + 1]) ?>">Вперед</a></li>
+            <?php } ?>
+        </ul>
+    <?php } ?>
